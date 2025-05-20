@@ -3,13 +3,14 @@ from pydantic import BaseModel
 
 class UserBase(BaseModel):
     username: str
-    pasword: str
+    password: str
     email: str
 
 
 class NoteBase(BaseModel):
     note: str
     user_id: int
+    anime_id: int
 
 
 class WatchlistBase(BaseModel):
@@ -22,8 +23,7 @@ class WatchlistBase(BaseModel):
 
 class PlaylistBase(BaseModel):
     user_id: int
-    song_id: int
-    anime_id: int
+    song_title: str
 
 
 class UserCreate(UserBase):
