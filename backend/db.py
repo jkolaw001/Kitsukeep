@@ -11,6 +11,7 @@ from schemas import (
     PlaylistCreate,
     PlaylistOut,
 )
+from db_models import DBNotes, DBPlaylist, DBUser, DBWatchlist
 
 
 DATABASE_URL = "postgresql+psycopg://postgres:postgres@localhost:5432/anime"
@@ -26,14 +27,15 @@ def get_watchlists() -> list[WatchlistOut]:
 
     watchlists = []
 
-    for db_watchlist in db_watchlists:
+    for watchlist in db_watchlists:
         watchlists.append(
             WatchlistOut(
-                watchlist_id=db_watchlist.watchlist_id,
-                title=db_watchlist.title,
-                img_url=db_watchlist.img_url,
-                genre=db_watchlist.genre,
-                user_id=db_watchlist.user_id
+                watchlist_id=watchlist.id,
+                user_id=watchlist.user_id,
+                title=watchlist.title,
+                img_url=watchlist.img_url,
+                genre=watchlist.genre,
+                anime_id=watchlist.anime_id
             )
         )
     db.close()
@@ -44,7 +46,7 @@ def get_watchlists() -> list[WatchlistOut]:
 
 def create_user(user: UserCreate) -> UserOut
     db = sessionLocal()
-    new_user = DBUser(**model_dump)
+    new_user = DBUser(**model_dump())
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

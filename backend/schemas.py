@@ -17,6 +17,7 @@ class WatchlistBase(BaseModel):
     img_url: str
     genre: str
     user_id: int
+    anime_id: int
 
 
 class PlaylistBase(BaseModel):
