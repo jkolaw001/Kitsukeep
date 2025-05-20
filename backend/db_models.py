@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, Integer, String, ForeignKey, Boolean
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import declarative_base, mapped_column, Mapped
 
 
@@ -8,11 +8,35 @@ Base = declarative_base()
 class DBUser(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, nullable=False)
-    password = Column(String, nullable=False)
-    email = Column(String, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    username: Mapped[str] = mapped_column(nullable=False)
+    password: Mapped[str] = mapped_column(nullable=False)
+    email: Mapped[str] = mapped_column(nullable=False)
 
 
 class DBPlaylist(Base):
-    __table
+    __tablename__ = "playlist"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    song_title: Mapped[str] = mapped_column(nullable=False)
+
+
+class DBWatchlist(Base):
+    __tablename__ = "watchlist"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    title: Mapped[str] = mapped_column(nullable=False)
+    img_url: Mapped[str] = mapped_column(nullable=False)
+    genre: Mapped[str] = mapped_column(nullable=False)
+    anime_id: Mapped[int] = mapped_column(nullable=False)
+
+
+class DBNotes(Base):
+    __tablename__ = "notes"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    note: Mapped[str] = mapped_column(nullable=False)
+    anime_id: Mapped[int] = mapped_column(nullable=False)
