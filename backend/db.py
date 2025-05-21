@@ -14,6 +14,8 @@ from schemas import (
     AnimeCreate,
     AnimeOut,
     NoteUpdate,
+    NoteWithUserOut,
+    WatchlistWithAnimeOut,
 )
 from db_models import DBNotes, DBPlaylist, DBUser, DBWatchlist, DBAnime
 
@@ -24,25 +26,31 @@ engine = create_engine(DATABASE_URL)
 sessionLocal = sessionmaker(bind=engine)
 
 
-def get_all_watchlists() -> list[WatchlistOut]:
+def get_all_watchlists() -> list[WatchlistWithAnimeOut]:
     db = sessionLocal()
-    db_watchlists = db.query(DBWatchlist).all()
 
-    watchlists = []
+    watchlists = (
+        db.query(DBWatchlist, DBAnime)
+        .join(DBAnime, DBWatchlist.anime_id == DBAnime.id)
+        .all()
+    )
 
-    for watchlist in db_watchlists:
-        watchlists.append(
-            WatchlistOut(
+    result = []
+
+    for watchlist, anime in watchlists:
+        result.append(
+            WatchlistWithAnimeOut(
                 watchlist_id=watchlist.id,
                 user_id=watchlist.user_id,
-                title=watchlist.title,
-                img_url=watchlist.img_url,
-                genre=watchlist.genre,
                 anime_id=watchlist.anime_id,
+                title=anime.title,
+                img_url=anime.img_url,
+                genre=anime.genre,
             )
         )
+
     db.close()
-    return watchlists
+    return result
 
 
 def create_user(user: UserCreate) -> UserOut:
@@ -212,14 +220,28 @@ def get_all_playlists() -> list[PlaylistOut]:
     return playlist_list
 
 
-def get_all_notes() -> list[NoteOut]:
+def get_all_notes_with_users() -> list[NoteWithUserOut]:
     db = sessionLocal()
-    notes_model = db.query(DBNotes).all()
-    notes_list = []
-    for notes in notes_model:
-        notes_list.append(notes)
+
+    results = (
+        db.query(DBNotes, DBUser.username)
+        .join(DBUser, DBNotes.user_id == DBUser.id)
+        .all()
+    )
+
+    notes_with_users = []
+    for note, username in results:
+        notes_with_users.append(
+            NoteWithUserOut(
+                id=note.id,
+                user_id=note.user_id,
+                note=note.note,
+                anime_id=note.anime_id,
+                username=username,
+            )
+        )
     db.close()
-    return notes_list
+    return notes_with_users
 
 
 def get_all_users() -> list[UserOut]:
