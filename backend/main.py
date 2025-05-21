@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
+from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
 from db import (
     create_user,
@@ -9,6 +10,9 @@ from db import (
     get_all_anime,
     get_anime,
     get_all_notes_by_anime,
+    delete_anime_from_watchlist,
+    delete_note,
+    delete_user,
 )
 from schemas import (
     UserCreate,
@@ -87,5 +91,34 @@ async def add_watchlist(watchlist: WatchlistCreate) -> WatchlistOut:
     return new_watchlist
 
 
-# @app.delete("/api/watchlists/{anime_id}")
-# async def remove_from_watchlist(anime_id: int):
+@app.delete("/api/watchlists/{anime_id}")
+async def remove_from_watchlist(anime_id: int, user_id: int):
+    anime_to_delete = delete_anime_from_watchlist(anime_id, user_id)
+    if not anime_to_delete:
+        raise HTTPException(status_code=404, detail="Anime not found in watchlist")
+    return anime_to_delete
+
+
+@app.delete("/api/anime/{anime_id}/notes/{note_id}")
+async def remove_note_from_anime(anime_id: int, note_id: int):
+    note_to_delete = delete_note(anime_id, note_id)
+    if not note_to_delete:
+        raise HTTPException(status_code=404, detail="Note not found")
+    return note_to_delete
+
+
+@app.delete("/api/users/{user_id}")
+async def remove_user(user_id: int):
+    user_to_delete = delete_user(user_id)
+    if not user_to_delete:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user_to_delete
+
+
+# Route to handle requests for static assets
+# this is a catch all so it should be registered last
+@app.get("/{file_path}", response_class=FileResponse)
+def get_static_file(file_path: str):
+    if Path("static/" + file_path).is_file():
+        return "static/" + file_path
+    raise HTTPException(status_code=404, detail="Item not found")

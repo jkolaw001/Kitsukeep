@@ -92,7 +92,10 @@ def create_watchlist(watchlist: WatchlistCreate) -> WatchlistOut:
     return result
 
 
-def create_note(note: NoteCreate, anime_id: int,) -> NoteOut:
+def create_note(
+    note: NoteCreate,
+    anime_id: int,
+) -> NoteOut:
 
     db = sessionLocal()
     note_model = DBNotes(user_id=note.user_id, anime_id=anime_id, note=note.note)
@@ -300,18 +303,26 @@ def delete_user(user_id: int):
     return {"detail": f"{user_id} has been deleted OwO"}
 
 
-def delete_note(note_id: int):
+def delete_note(anime_id: int, note_id: int):
     db = sessionLocal()
-    note_model = db.query(DBNotes).filter(DBNotes.id == note_id).first()
+    note_model = (
+        db.query(DBNotes)
+        .filter(DBNotes.id == note_id, DBNotes.anime_id == anime_id)
+        .first()
+    )
     db.delete(note_model)
     db.commit()
     db.close()
     return {"detail": f"{note_id} has been deleted OwO"}
 
 
-def delete_anime(anime_id: int):
+def delete_anime_from_watchlist(anime_id: int, user_id: int):
     db = sessionLocal()
-    anime_model = db.query(DBAnime).filter(DBAnime.id == anime_id).first()
+    anime_model = (
+        db.query(DBWatchlist)
+        .filter(DBWatchlist.anime_id == anime_id, DBWatchlist.user_id == user_id)
+        .first()
+    )
     db.delete(anime_model)
     db.commit()
     db.close()
