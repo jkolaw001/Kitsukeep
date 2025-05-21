@@ -7,6 +7,14 @@ class UserBase(BaseModel):
     email: str
 
 
+class AnimeBase(BaseModel):
+    title: str
+    description: str
+    genre: str
+    rating: str
+    img_url: str
+
+
 class NoteBase(BaseModel):
     note: str
     user_id: int
@@ -56,3 +64,11 @@ class NoteCreate(NoteBase):
 
 class NoteOut(NoteBase):
     note_id: int
+
+
+class AnimeCreate(AnimeBase):
+    pass
+
+
+class AnimeOut(AnimeBase):
+    id: int
