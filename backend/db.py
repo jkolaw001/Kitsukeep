@@ -24,7 +24,7 @@ engine = create_engine(DATABASE_URL)
 sessionLocal = sessionmaker(bind=engine)
 
 
-def get_watchlists() -> list[WatchlistOut]:
+def get_all_watchlists() -> list[WatchlistOut]:
     db = sessionLocal()
     db_watchlists = db.query(DBWatchlist).all()
 
@@ -210,16 +210,6 @@ def get_all_playlists() -> list[PlaylistOut]:
         )
     db.close()
     return playlist_list
-
-
-def get_all_watchlists() -> list[WatchlistOut]:
-    db = sessionLocal()
-    watchlist_model = db.query(DBWatchlist).all()
-    watchlist_list = []
-    for watchlist in watchlist_model:
-        watchlist_list.append(watchlist)
-    db.close()
-    return watchlist_list
 
 
 def get_all_notes() -> list[NoteOut]:
