@@ -36,7 +36,7 @@ class DBNotes(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     note: Mapped[str] = mapped_column(nullable=False)
-    anime_id: Mapped[int] = mapped_column(nullable=False)
+    anime_id: Mapped[int] = mapped_column(ForeignKey("anime.id"), nullable=False)
 
 
 class DBAnime(Base):
@@ -49,3 +49,10 @@ class DBAnime(Base):
     rating: Mapped[str] = mapped_column(nullable=False)
     img_url: Mapped[str] = mapped_column(nullable=True)
     trailer: Mapped[str] = mapped_column(nullable=True)
+
+
+class DBSong(Base):
+    __tablename__ = "songs"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    song_info: Mapped[str] = mapped_column(nullable=False)
