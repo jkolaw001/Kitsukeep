@@ -151,8 +151,19 @@ def create_anime(anime: AnimeCreate) -> AnimeOut:
 def get_anime(anime_id: int) -> AnimeOut | None:
     db = sessionLocal()
     anime = db.query(DBAnime).filter(DBAnime.id == anime_id).first()
+    if not anime:
+        return None
+    chosen_anime = AnimeOut(
+        id=anime.id,
+        title=anime.title,
+        description=anime.description,
+        genre=anime.genre,
+        rating=anime.rating,
+        img_url=anime.img_url,
+        trailer=anime.trailer,
+    )
     db.close()
-    return anime
+    return chosen_anime
 
 
 def get_user(user_id: int) -> UserOut | None:

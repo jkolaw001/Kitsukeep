@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
-from db import create_user, get_watchlists, create_watchlist
+from db import create_user, get_all_watchlists, create_watchlist, get_all_anime, get_anime
 from schemas import UserCreate, UserOut, WatchlistOut, AnimeCreate, AnimeOut, WatchlistCreate
 
 
@@ -26,9 +26,21 @@ async def add_user(user: UserCreate) -> UserOut:
     return new_user
 
 
+
+@app.get("/api/anime")
+async def get_anime() -> list[AnimeOut]:
+    return get_all_anime()
+
+@app.get("/api/anime/{anime_id}")
+async def get_anime_by_id(anime_id: int) -> AnimeOut | None:
+    anime = get_anime(anime_id: int)
+    if not anime:
+        raise HTTPException(status_code=404, detail="Anime not found")
+    return anime
+
 @app.get("/api/watchlists")
 async def get_watchlist() -> list[WatchlistOut]:
-    return get_watchlists()
+    return get_all_watchlists()
 
 @app.post("/api/watchlists")
 async def add_watchlist(watchlist: WatchlistCreate) -> WatchlistOut:
@@ -39,6 +51,5 @@ async def add_watchlist(watchlist: WatchlistCreate) -> WatchlistOut:
 
 @app.delete("/api/watchlists/{anime_id}")
 async def remove_from_watchlist(anime_id: int):
-
 
 
