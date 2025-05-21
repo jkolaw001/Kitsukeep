@@ -134,6 +134,7 @@ def create_anime(anime: AnimeCreate) -> AnimeOut:
         genre=anime_model.genre,
         rating=anime_model.rating,
         img_url=anime_model.img_url,
+        trailer=anime_model.trailer,
     )
     db.close()
     return result
