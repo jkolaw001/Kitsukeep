@@ -13,6 +13,7 @@ class AnimeBase(BaseModel):
     genre: str
     rating: str
     img_url: str
+    trailer: str
 
 
 class NoteBase(BaseModel):
@@ -31,7 +32,7 @@ class WatchlistBase(BaseModel):
 
 class PlaylistBase(BaseModel):
     user_id: int
-    song_title: str
+    song_id: int
 
 
 class UserCreate(UserBase):

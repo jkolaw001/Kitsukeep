@@ -15,7 +15,7 @@ from schemas import (
     AnimeOut,
     NoteUpdate,
 )
-from db_models import DBNotes, DBPlaylist, DBUser, DBWatchlist
+from db_models import DBNotes, DBPlaylist, DBUser, DBWatchlist, DBAnime
 
 
 DATABASE_URL = "postgresql+psycopg://postgres:postgres@localhost:5432/anime"
@@ -113,7 +113,7 @@ def create_playlist(playlist: PlaylistCreate) -> PlaylistOut:
     result = PlaylistOut(
         playlist_id=playlist_model.id,
         user_id=playlist_model.user_id,
-        song_title=playlist_model.song_title,
+        song_id=playlist_model.song_id,
     )
     db.close()
     return result
@@ -176,12 +176,23 @@ def get_note(note_id: int) -> NoteOut | None:
 
 def get_all_anime() -> list[AnimeOut]:
     db = sessionLocal()
-    anime_model = db.query(DBAnime).all
-    anime_list = []
-    for anime in anime_model:
-        anime_list.append(anime)
+
+    db_animes = db.query(DBAnime).order_by(DBAnime.id).all()
+    animes = []
+    for db_anime in db_animes:
+        animes.append(
+            AnimeOut(
+                id=db_anime.id,
+                title=db_anime.title,
+                description=db_anime.description,
+                genre=db_anime.genre,
+                rating=db_anime.rating,
+                img_url=db_anime.img_url,
+                trailer=db_anime.trailer,
+            )
+        )
     db.close()
-    return anime_list
+    return animes
 
 
 def get_all_playlists() -> list[PlaylistOut]:
@@ -189,7 +200,13 @@ def get_all_playlists() -> list[PlaylistOut]:
     playlist_model = db.query(DBPlaylist).all()
     playlist_list = []
     for playlist in playlist_model:
-        playlist_list.append(playlist)
+        playlist_list.append(
+            PlaylistOut(
+                playlist_id=playlist.id,
+                song_id=playlist.song_id,
+                user_id=playlist.user_id,
+            )
+        )
     db.close()
     return playlist_list
 
