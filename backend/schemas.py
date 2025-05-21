@@ -3,13 +3,23 @@ from pydantic import BaseModel
 
 class UserBase(BaseModel):
     username: str
-    pasword: str
+    password: str
     email: str
+
+
+class AnimeBase(BaseModel):
+    title: str
+    description: str
+    genre: str
+    rating: str
+    img_url: str
+    trailer: str
 
 
 class NoteBase(BaseModel):
     note: str
     user_id: int
+    anime_id: int
 
 
 class WatchlistBase(BaseModel):
@@ -23,7 +33,6 @@ class WatchlistBase(BaseModel):
 class PlaylistBase(BaseModel):
     user_id: int
     song_id: int
-    anime_id: int
 
 
 class UserCreate(UserBase):
@@ -56,3 +65,15 @@ class NoteCreate(NoteBase):
 
 class NoteOut(NoteBase):
     note_id: int
+
+
+class AnimeCreate(AnimeBase):
+    pass
+
+
+class AnimeOut(AnimeBase):
+    id: int
+
+
+class NoteUpdate(BaseModel):
+    note: str | None = None
