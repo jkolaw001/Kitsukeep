@@ -49,5 +49,5 @@ CREATE TABLE playlist (
     user_id INT NOT NULL,
     song_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (song_id) REFERENCES song(id) ON DELETE CASCADE
+    FOREIGN KEY (song_id) REFERENCES songs(id) ON DELETE CASCADE
 );
