@@ -72,3 +72,7 @@ class AnimeCreate(AnimeBase):
 
 class AnimeOut(AnimeBase):
     id: int
+
+
+class NoteUpdate(BaseModel):
+    note: str | None = None

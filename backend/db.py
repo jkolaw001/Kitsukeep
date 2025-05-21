@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from fastapi import HTTPException
 from schemas import (
     WatchlistCreate,
     WatchlistOut,
@@ -12,6 +13,7 @@ from schemas import (
     PlaylistOut,
     AnimeCreate,
     AnimeOut,
+    NoteUpdate,
 )
 from db_models import DBNotes, DBPlaylist, DBUser, DBWatchlist
 
@@ -117,6 +119,26 @@ def create_playlist(playlist: PlaylistCreate) -> PlaylistOut:
     return result
 
 
+def create_anime(anime: AnimeCreate) -> AnimeOut:
+    db = sessionLocal()
+    anime_model = DBAnime(**anime.model_dump())
+
+    db.add(anime_model)
+    db.commit()
+    db.refresh(anime_model)
+
+    result = AnimeOut(
+        id=anime_model.id,
+        title=anime_model.title,
+        description=anime_model.description,
+        genre=anime_model.genre,
+        rating=anime_model.rating,
+        img_url=anime_model.img_url,
+    )
+    db.close()
+    return result
+
+
 def get_anime(anime_id: int) -> AnimeOut | None:
     db = sessionLocal()
     anime = db.query(DBAnime).filter(DBAnime.id == anime_id).first()
@@ -208,4 +230,35 @@ def delete_user(user_id: int):
     db.delete(user_model)
     db.commit()
     db.close()
-    return {"detail": f"{user_id} has been deleted owo"}
+    return {"detail": f"{user_id} has been deleted OwO"}
+
+
+def delete_note(note_id: int):
+    db = sessionLocal()
+    note_model = db.query(DBNotes).filter(DBNotes.id == note_id).first()
+    db.delete(note_model)
+    db.commit()
+    db.close()
+    return {"detail": f"{note_id} has been deleted OwO"}
+
+
+def delete_anime(anime_id: int):
+    db = sessionLocal()
+    anime_model = db.query(DBAnime).filter(DBAnime.id == anime_id).first()
+    db.delete(anime_model)
+    db.commit()
+    db.close()
+    return {"detail": f"{anime_id} has been deleted OwO"}
+
+
+def update_note(note_id: int, notes: NoteUpdate) -> NoteOut:
+    db = sessionLocal()
+    note_model = db.query(DBNotes).filter(DBNotes.id == note_id).first()
+    if not note_model:
+        raise HTTPException(status_code=404, detail="Note not found")
+    if notes.note is not None:
+        note_model.note = notes.note
+    db.commit()
+    db.refresh(note_model)
+    db.close()
+    return note_model
