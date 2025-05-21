@@ -1,5 +1,5 @@
-
 -- USER TABLE
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
@@ -51,3 +51,4 @@ CREATE TABLE playlist (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (song_id) REFERENCES songs(id) ON DELETE CASCADE
 );
+
