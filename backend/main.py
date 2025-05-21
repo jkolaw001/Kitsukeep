@@ -1,8 +1,28 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
-from db import create_user, get_all_watchlists, create_watchlist, get_all_anime, get_anime
-from schemas import UserCreate, UserOut, WatchlistOut, AnimeCreate, AnimeOut, WatchlistCreate
+from db import (
+    create_user,
+    get_all_watchlists,
+    create_note,
+    create_watchlist,
+    get_all_anime,
+    get_anime,
+    get_all_notes_by_anime,
+)
+from schemas import (
+    UserCreate,
+    UserOut,
+    WatchlistOut,
+    NoteCreate,
+    NoteOut,
+    AnimeCreate,
+    AnimeOut,
+    WatchlistCreate,
+    NoteWithUserOut,
+    NoteWithAnimeOut,
+    WatchlistWithAnimeOut,
+)
 
 
 app = FastAPI()
@@ -26,21 +46,38 @@ async def add_user(user: UserCreate) -> UserOut:
     return new_user
 
 
-
 @app.get("/api/anime")
-async def get_anime() -> list[AnimeOut]:
+async def get_every_anime() -> list[AnimeOut]:
     return get_all_anime()
+
 
 @app.get("/api/anime/{anime_id}")
 async def get_anime_by_id(anime_id: int) -> AnimeOut | None:
-    anime = get_anime(anime_id: int)
+    anime = get_anime(anime_id)
     if not anime:
         raise HTTPException(status_code=404, detail="Anime not found")
     return anime
 
+
 @app.get("/api/watchlists")
-async def get_watchlist() -> list[WatchlistOut]:
-    return get_all_watchlists()
+async def get_watchlist() -> list[WatchlistWithAnimeOut] | None:
+    watchlists = get_all_watchlists()
+    if not watchlists:
+        raise HTTPException(status_code=404, detail="Watchlist not found")
+    return watchlists
+
+
+@app.get("/api/anime/{anime_id}/notes")
+async def get_notes_by_anime_id(anime_id: int) -> list[NoteWithAnimeOut] | None:
+    notes = get_all_notes_by_anime(anime_id)
+    return notes
+
+
+@app.post("/api/anime/{anime_id}/notes")
+async def add_note(anime_id: int, note: NoteCreate) -> NoteOut:
+    new_note = create_note(note, anime_id)
+    return new_note
+
 
 @app.post("/api/watchlists")
 async def add_watchlist(watchlist: WatchlistCreate) -> WatchlistOut:
@@ -49,7 +86,6 @@ async def add_watchlist(watchlist: WatchlistCreate) -> WatchlistOut:
         raise HTTPException(status_code=400, detail="Watchlist already exists")
     return new_watchlist
 
-@app.delete("/api/watchlists/{anime_id}")
-async def remove_from_watchlist(anime_id: int):
 
-
+# @app.delete("/api/watchlists/{anime_id}")
+# async def remove_from_watchlist(anime_id: int):

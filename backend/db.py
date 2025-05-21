@@ -16,6 +16,7 @@ from schemas import (
     NoteUpdate,
     NoteWithUserOut,
     WatchlistWithAnimeOut,
+    NoteWithAnimeOut,
 )
 from db_models import DBNotes, DBPlaylist, DBUser, DBWatchlist, DBAnime
 
@@ -91,10 +92,10 @@ def create_watchlist(watchlist: WatchlistCreate) -> WatchlistOut:
     return result
 
 
-def create_note(note: NoteCreate) -> NoteOut:
+def create_note(note: NoteCreate, anime_id: int,) -> NoteOut:
 
     db = sessionLocal()
-    note_model = DBNotes(**note.model_dump())
+    note_model = DBNotes(user_id=note.user_id, anime_id=anime_id, note=note.note)
 
     db.add(note_model)
     db.commit()
@@ -244,6 +245,31 @@ def get_all_notes_with_users() -> list[NoteWithUserOut]:
     for note, username in results:
         notes_with_users.append(
             NoteWithUserOut(
+                id=note.id,
+                user_id=note.user_id,
+                note=note.note,
+                anime_id=note.anime_id,
+                username=username,
+            )
+        )
+    db.close()
+    return notes_with_users
+
+
+def get_all_notes_by_anime(anime_id: int) -> list[NoteWithAnimeOut]:
+    db = sessionLocal()
+
+    results = (
+        db.query(DBNotes, DBUser.username)
+        .join(DBUser, DBNotes.user_id == DBUser.id)
+        .filter(DBNotes.anime_id == anime_id)
+        .all()
+    )
+
+    notes_with_users = []
+    for note, username in results:
+        notes_with_users.append(
+            NoteWithAnimeOut(
                 id=note.id,
                 user_id=note.user_id,
                 note=note.note,

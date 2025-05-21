@@ -19,7 +19,7 @@ class AnimeBase(BaseModel):
 class NoteBase(BaseModel):
     note: str
     user_id: int
-    anime_id: int
+
 
 
 class WatchlistBase(BaseModel):
@@ -65,8 +65,6 @@ class NoteCreate(NoteBase):
 
 class NoteOut(NoteBase):
     note_id: int
-    user_id: int
-    note: str
     anime_id: int
 
 
@@ -97,3 +95,11 @@ class WatchlistWithAnimeOut(BaseModel):
     title: str
     img_url: str
     genre: str
+
+
+class NoteWithAnimeOut(BaseModel):
+    id: int
+    user_id: int
+    note: str
+    anime_id: int
+    username: str
