@@ -27,10 +27,7 @@ class DBWatchlist(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    title: Mapped[str] = mapped_column(nullable=False)
-    img_url: Mapped[str] = mapped_column(nullable=False)
-    genre: Mapped[str] = mapped_column(nullable=False)
-    anime_id: Mapped[int] = mapped_column(nullable=False)
+    anime_id: Mapped[int] = mapped_column(ForeignKey("anime.id"), nullable=False)
 
 
 class DBNotes(Base):
@@ -50,5 +47,5 @@ class DBAnime(Base):
     description: Mapped[str] = mapped_column(nullable=False)
     genre: Mapped[str] = mapped_column(nullable=False)
     rating: Mapped[str] = mapped_column(nullable=False)
-    img_url: Mapped[str] = mapped_column(nullable=False)
-    trailer: Mapped[str] = mapped_column(nullable=False)
+    img_url: Mapped[str] = mapped_column(nullable=True)
+    trailer: Mapped[str] = mapped_column(nullable=True)
