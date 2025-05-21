@@ -83,9 +83,6 @@ def create_watchlist(watchlist: WatchlistCreate) -> WatchlistOut:
     result = WatchlistOut(
         watchlist_id=watchlist_model.id,
         user_id=watchlist_model.user_id,
-        title=watchlist_model.title,
-        img_url=watchlist_model.img_url,
-        genre=watchlist_model.genre,
         anime_id=watchlist_model.anime_id,
     )
     db.close()

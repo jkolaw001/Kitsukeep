@@ -21,11 +21,7 @@ class NoteBase(BaseModel):
     user_id: int
 
 
-
 class WatchlistBase(BaseModel):
-    title: str
-    img_url: str
-    genre: str
     user_id: int
     anime_id: int
 
