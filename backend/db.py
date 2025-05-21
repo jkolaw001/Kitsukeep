@@ -10,6 +10,8 @@ from schemas import (
     UserOut,
     PlaylistCreate,
     PlaylistOut,
+    AnimeCreate,
+    AnimeOut,
 )
 from db_models import DBNotes, DBPlaylist, DBUser, DBWatchlist
 
@@ -115,6 +117,13 @@ def create_playlist(playlist: PlaylistCreate) -> PlaylistOut:
     return result
 
 
+def get_anime(anime_id: int) -> AnimeOut | None:
+    db = sessionLocal()
+    anime = db.query(DBAnime).filter(DBAnime.id == anime_id).first()
+    db.close()
+    return anime
+
+
 def get_user(user_id: int) -> UserOut | None:
     db = sessionLocal()
     user = db.query(DBUser).filter(DBUser.id == user_id).first()
@@ -141,6 +150,16 @@ def get_note(note_id: int) -> NoteOut | None:
     note = db.query(DBNotes).filter(DBNotes.id == note_id).first()
     db.close()
     return note
+
+
+def get_all_anime() -> list[AnimeOut]:
+    db = sessionLocal()
+    anime_model = db.query(DBAnime).all
+    anime_list = []
+    for anime in anime_model:
+        anime_list.append(anime)
+    db.close()
+    return anime_list
 
 
 def get_all_playlists() -> list[PlaylistOut]:
