@@ -10,10 +10,10 @@ class DBUser(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    username: Mapped[str] = mapped_column(nullable=False)
+    username: Mapped[str] = mapped_column(nullable=False, unique=True)
     password: Mapped[str] = mapped_column(nullable=False)
-    session_token: Mapped[str] = mapped_column(nullable=True)
-    session_expires_at: Mapped[datetime] = mapped_column(nullable=True)
+    session_token: Mapped[str] = mapped_column()
+    session_expires_at: Mapped[datetime] = mapped_column()
 
 
 class DBPlaylist(Base):

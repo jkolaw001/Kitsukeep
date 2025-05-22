@@ -410,7 +410,7 @@ def create_user_account(username: str, password: str) -> bool:
         hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
         account = DBUser(
             username=username,
-            hashed_password=hashed_password,
+            password=hashed_password,
             session_token=None,
             session_expires_at=None,
         )

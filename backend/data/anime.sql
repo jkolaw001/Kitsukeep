@@ -11,8 +11,8 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
-    session_token VARCHAR(255) NOT NULL,
-    session_expires_at: TIMESTAMP NOT NULL
+    session_token TEXT,
+    session_expires_at TIMESTAMP
 );
 
 -- ANIME TABLE
@@ -60,32 +60,32 @@ CREATE TABLE playlist (
     FOREIGN KEY (song_id) REFERENCES songs(id) ON DELETE CASCADE
 );
 
--- INSERT USERS
-INSERT INTO users (username, email, password) VALUES
-('animeFan123', 'fan123@example.com', 'securepass1'),
-('otakuMaster', 'otaku@example.com', 'securepass2');
+-- -- INSERT USERS
+-- INSERT INTO users (username, email, password) VALUES
+-- ('animeFan123', 'fan123@example.com', 'securepass1'),
+-- ('otakuMaster', 'otaku@example.com', 'securepass2');
 
--- INSERT ANIME
-INSERT INTO anime (title, description, genre, rating, img_url, trailer) VALUES
-('Naruto', 'A young ninja strives to become the Hokage.', 'Action', 'PG-13', 'https://imgurl.com/naruto', 'https://trailer.com/naruto'),
-('Attack on Titan', 'Humans fight for survival against Titans.', 'Thriller', 'R', 'https://imgurl.com/aot', 'https://trailer.com/aot');
+-- -- INSERT ANIME
+-- INSERT INTO anime (title, description, genre, rating, img_url, trailer) VALUES
+-- ('Naruto', 'A young ninja strives to become the Hokage.', 'Action', 'PG-13', 'https://imgurl.com/naruto', 'https://trailer.com/naruto'),
+-- ('Attack on Titan', 'Humans fight for survival against Titans.', 'Thriller', 'R', 'https://imgurl.com/aot', 'https://trailer.com/aot');
 
--- INSERT NOTES
-INSERT INTO notes (user_id, anime_id, note) VALUES
-(1, 1, 'Loved the character development.'),
-(2, 2, 'Epic fight scenes and deep story.');
+-- -- INSERT NOTES
+-- INSERT INTO notes (user_id, anime_id, note) VALUES
+-- (1, 1, 'Loved the character development.'),
+-- (2, 2, 'Epic fight scenes and deep story.');
 
--- INSERT WATCHLIST
-INSERT INTO watchlist (user_id, anime_id) VALUES
-(1, 2),
-(2, 1);
+-- -- INSERT WATCHLIST
+-- INSERT INTO watchlist (user_id, anime_id) VALUES
+-- (1, 2),
+-- (2, 1);
 
--- INSERT SONG
-INSERT INTO songs (song_info) VALUES
-('Blue Bird - Naruto Opening'),
-('Shinzou wo Sasageyo - AOT Opening');
+-- -- INSERT SONG
+-- INSERT INTO songs (song_info) VALUES
+-- ('Blue Bird - Naruto Opening'),
+-- ('Shinzou wo Sasageyo - AOT Opening');
 
--- INSERT PLAYLIST
-INSERT INTO playlist (user_id, song_id) VALUES
-(1, 1),
-(2, 2);
+-- -- INSERT PLAYLIST
+-- INSERT INTO playlist (user_id, song_id) VALUES
+-- (1, 1),
+-- (2, 2);
