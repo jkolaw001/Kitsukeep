@@ -1,10 +1,12 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class UserBase(BaseModel):
     username: str
     password: str
-    email: str
+    session_token: str
+    session_expired_at: datetime
 
 
 class AnimeBase(BaseModel):
@@ -99,3 +101,21 @@ class NoteWithAnimeOut(BaseModel):
     note: str
     anime_id: int
     username: str
+
+
+class LoginCredentials(BaseModel):
+    username: str
+    password: str
+
+
+class SuccessResponse(BaseModel):
+    success: bool
+
+
+class SecretResponse(BaseModel):
+    secret: str
+
+
+class UserPublicDetails(BaseModel):
+    username: str
+    # Add more public fields here if needed

@@ -1,7 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
+from datetime import datetime, timedelta
+from secrets import token_urlsafe
+import bcrypt
 from schemas import (
     WatchlistCreate,
     WatchlistOut,
@@ -22,6 +25,7 @@ from db_models import DBNotes, DBPlaylist, DBUser, DBWatchlist, DBAnime
 
 
 DATABASE_URL = "postgresql+psycopg://postgres:postgres@localhost:5432/anime"
+SESSION_LIFE_MINUTES = 60 * 60 * 2
 
 engine = create_engine(DATABASE_URL)
 sessionLocal = sessionmaker(bind=engine)
@@ -54,21 +58,20 @@ def get_all_watchlists() -> list[WatchlistWithAnimeOut]:
     return result
 
 
-def create_user(user: UserCreate) -> UserOut:
-    db = sessionLocal()
-    new_user = DBUser(**user.model_dump())
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+# def create_user(user: UserCreate) -> UserOut:
+#     db = sessionLocal()
+#     new_user = DBUser(**user.model_dump())
+#     db.add(new_user)
+#     db.commit()
+#     db.refresh(new_user)
 
-    result = UserOut(
-        id=new_user.id,
-        username=new_user.username,
-        password=new_user.password,
-        email=new_user.email,
-    )
-    db.close()
-    return result
+#     result = UserOut(
+#         id=new_user.id,
+#         username=new_user.username,
+#         password=new_user.password,
+#     )
+#     db.close()
+#     return result
 
 
 def create_watchlist(watchlist: WatchlistCreate) -> WatchlistOut:
@@ -337,3 +340,147 @@ def update_note(note_id: int, notes: NoteUpdate) -> NoteOut:
     db.refresh(note_model)
     db.close()
     return note_model
+
+
+def validate_username_password(username: str, password: str) -> str | None:
+    """
+    Validate a username and password against the database. If valid,
+    generates a new session token, updates the session expiration, and
+    returns the session token. Returns None if credentials are invalid.
+    """
+    # retrieve the user account from the database
+    with sessionLocal() as db:
+        account = db.query(DBUser).filter(DBUser.username == username).first()
+        if not account:
+            return None
+
+        # validate the provided credentials (username & password)
+        valid_credentials = bcrypt.checkpw(password.encode(), account.password.encode())
+        if not valid_credentials:
+            return None
+
+        # create a new session token and set the expiration date
+        session_token = token_urlsafe()
+        account.session_token = session_token
+        expires = datetime.now() + timedelta(minutes=SESSION_LIFE_MINUTES)
+        # assign as datetime, not isoformat
+        account.session_expires_at = expires
+        db.commit()
+        return session_token
+
+
+def invalidate_session(username: str, session_token: str) -> None:
+    """
+    Invalidate a user's session by setting the session token to a unique
+    expired value.
+    """
+    # retrieve the user account for the given session token
+    with sessionLocal() as db:
+        account = (
+            db.query(DBUser)
+            .filter(
+                DBUser.username == username,
+                DBUser.session_token == session_token,
+            )
+            .first()
+        )
+        if not account:
+            return
+
+        # set the token to an invalid value that is unique
+        account.session_token = f"expired-{token_urlsafe()}"
+        db.commit()
+
+
+def create_user_account(username: str, password: str) -> bool:
+    """
+    Create a new user account with the given username and password.
+    Returns True if the account was created successfully, or False if the
+    username exists.
+    """
+    # Create a new user account.
+    # Returns True if successful, False if username exists.
+    with sessionLocal() as db:
+        # Check if username already exists
+        if db.query(DBUser).filter(DBUser.username == username).first():
+            return False
+        # Hash the password using bcrypt before storing it in the database.
+        # bcrypt.hashpw returns a hashed password as bytes,
+        # which we decode to a string.
+        hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+        account = DBUser(
+            username=username,
+            password=hashed_password,
+            session_token=None,
+            session_expires_at=None,
+        )
+        db.add(account)
+        db.commit()
+        return True
+
+
+def validate_session(username: str, session_token: str) -> bool:
+    """
+    Validate a session token for a given username. Returns True if the
+    session is valid and not expired, and updates the session expiration.
+    Returns False otherwise.
+    """
+    # retrieve the user account for the given session token
+    with sessionLocal() as db:
+        account = (
+            db.query(DBUser)
+            .filter(
+                DBUser.username == username,
+                DBUser.session_token == session_token,
+            )
+            .first()
+        )
+        if not account:
+            return False
+
+        # validate that it is not expired
+        if datetime.now() >= account.session_expires_at:
+            return False
+
+        # update the expiration date and save to the database
+        expires = datetime.now() + timedelta(minutes=SESSION_LIFE_MINUTES)
+        # assign as datetime, not isoformat
+        account.session_expires_at = expires
+        db.commit()
+        return True
+
+
+# This is an authentication function which can be Depend'd
+# on by a route to require authentication for access to the route.
+# See the next route below (@app.get("/", ...)) for an example.
+def get_auth_user(request: Request):
+    """
+    Dependency for protected routes.
+    Verifies that the user has a valid session. Raises 401 if not
+    authenticated, 403 if session is invalid. Returns True if
+    authenticated.
+    """
+    """verify that user has a valid session"""
+    username = request.session.get("username")
+    if not username and not isinstance(username, str):
+        raise HTTPException(status_code=401)
+    session_token = request.session.get("session_token")
+    if not session_token and not isinstance(session_token, str):
+        raise HTTPException(status_code=401)
+    if not validate_session(username, session_token):
+        raise HTTPException(status_code=403)
+    return True
+
+
+def get_user_public_details(username: str):
+    """
+    Fetch public details for a user by username. Returns a UserPublicDetails
+    object if found, or None if not found.
+    """
+    from schemas import UserPublicDetails
+
+    with sessionLocal() as db:
+        account = db.query(DBUser).filter(DBUser.username == username).first()
+        if not account:
+            return None
+        return UserPublicDetails(username=account.username)

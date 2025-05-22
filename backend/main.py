@@ -1,9 +1,10 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.responses import FileResponse
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 from db import (
-    create_user,
+    # create_user,
     get_all_watchlists,
     create_note,
     create_watchlist,
@@ -13,6 +14,11 @@ from db import (
     delete_anime_from_watchlist,
     delete_note,
     delete_user,
+    validate_username_password,
+    invalidate_session,
+    create_user_account,
+    get_user_public_details,
+    get_auth_user,
 )
 from schemas import (
     UserCreate,
@@ -26,10 +32,21 @@ from schemas import (
     NoteWithUserOut,
     NoteWithAnimeOut,
     WatchlistWithAnimeOut,
+    LoginCredentials,
+    SuccessResponse,
+    SecretResponse,
+    UserPublicDetails,
 )
 
 
 app = FastAPI()
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key="some-random-string",
+    session_cookie="session",
+    max_age=60 * 60 * 2,  # 2 hours in seconds
+)
 
 origins = ["http://127.0.0.1:5173"]
 
@@ -42,12 +59,12 @@ app.add_middleware(
 )
 
 
-@app.post("/api/users")
-async def add_user(user: UserCreate) -> UserOut:
-    new_user = create_user(user)
-    if not new_user:
-        raise HTTPException(status_code=400, detail="User already exists")
-    return new_user
+# @app.post("/api/users")
+# async def add_user(user: UserCreate) -> UserOut:
+#     new_user = create_user(user)
+#     if not new_user:
+#         raise HTTPException(status_code=400, detail="User already exists")
+#     return new_user
 
 
 @app.get("/api/anime")
@@ -113,6 +130,98 @@ async def remove_user(user_id: int):
     if not user_to_delete:
         raise HTTPException(status_code=404, detail="User not found")
     return user_to_delete
+
+
+# Endpoint to handle login requests
+@app.post("/api/login", response_model=SuccessResponse)
+async def session_login(
+    credentials: LoginCredentials, request: Request
+) -> SuccessResponse:
+    """
+    Handle user login.
+    Validates credentials, creates a session, and stores session info
+    in cookies. Returns success if login is valid, else raises 401.
+    """
+    # validate the username and password
+    username = credentials.username
+    password = credentials.password
+    new_session_token = validate_username_password(username, password)
+
+    # return a 401 (unauthorized) if invalid username/password combo
+    if not new_session_token:
+        raise HTTPException(status_code=401)
+
+    # store the user's username and the generated session_token
+    # in the user's session
+    request.session["username"] = username
+    request.session["session_token"] = new_session_token
+    return SuccessResponse(success=True)
+
+
+# Endpoint to handle logout requests
+@app.get("/api/logout", response_model=SuccessResponse)
+async def session_logout(request: Request) -> SuccessResponse:
+    """
+    Handle user logout.
+    Invalidates the session in the database and clears session data
+    from cookies. Returns success status.
+    """
+    # invalidate the session in the database
+    username = request.session.get("username")
+    if not username and not isinstance(username, str):
+        return SuccessResponse(success=False)
+    session_token = request.session.get("session_token")
+    if not session_token and not isinstance(session_token, str):
+        return SuccessResponse(success=False)
+    invalidate_session(username, session_token)
+
+    # clear out the session data
+    request.session.clear()
+    return SuccessResponse(success=True)
+
+
+# Endpoint to handle signup requests
+@app.post("/api/signup", response_model=SuccessResponse)
+async def signup(credentials: LoginCredentials, request: Request) -> SuccessResponse:
+    """
+    Handle user signup.
+    Creates a new user account if username is available, then logs in
+    the user. Returns success if signup is successful, else raises 400
+    or 409.
+    """
+    username = credentials.username
+    password = credentials.password
+    # Check for empty username or password
+    if not username or not password:
+        raise HTTPException(status_code=400, detail="Username and password required")
+    # Use db.py helper to create the user account
+    success = create_user_account(username, password)
+    if not success:
+        raise HTTPException(status_code=409, detail="Username already exists")
+    # Automatically log in the user after signup
+    new_session_token = validate_username_password(username, password)
+    request.session["username"] = username
+    request.session["session_token"] = new_session_token
+    return SuccessResponse(success=True)
+
+
+@app.get(
+    "/api/me",
+    response_model=UserPublicDetails,
+    dependencies=[Depends(get_auth_user)],
+)
+async def get_me(request: Request) -> UserPublicDetails:
+    """
+    Returns the public details of the currently authenticated user.
+    Raises 404 if the user is not found in the database.
+    """
+    username = request.session.get("username")
+    if not isinstance(username, str):
+        raise HTTPException(status_code=404, detail="User not found")
+    user_details = get_user_public_details(username)
+    if not user_details:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user_details
 
 
 # Route to handle requests for static assets
