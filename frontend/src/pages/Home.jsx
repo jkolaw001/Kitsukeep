@@ -1,0 +1,77 @@
+import { useState } from "react";
+import "./Home.css";
+import { Link } from "react-router-dom";
+
+function HomePage() {
+  return (
+    <>
+      <div className="nav-container" id="navContainer">
+        <div className="header">
+          <div className="left-section">
+            <a href="#" className="main-logo">
+              Kitsukeep
+            </a>
+            <button className="menu-button">Watchlist</button>
+            <button className="menu-button">Playlists</button>
+          </div>
+          <div className="right-section">
+            <a href="">Some Stuff</a>
+            <div className="search-container">
+              <button className="search">
+                <span className="icon">🔍</span>
+              </button>
+            </div>
+            <button className="user-menu">
+              <span className="icon">👤</span>
+              USER
+              <span className="icon">▼</span>
+            </button>
+
+            <button className="language-button">
+              EN
+              <span className="icon">▼</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="content">
+        <div className="carousel-section">
+          <h1 className="carousel-title"> Carousel Here</h1>
+          <p className="carousel-subtitle">Some Animes images here</p>
+        </div>
+        <button className="carousel-button">#</button>
+        <p>Your site content goes here.</p>
+      </div>
+
+      <div className="anime-cards">
+        <div className="card">
+          <h3 className="card-title">Anime 1</h3>
+          <p className="card-description">
+            Anime name and a few info
+          </p>
+        </div>
+        <div className="card">
+          <h3 className="card-title">Anime 2</h3>
+          <p className="card-description">
+            Anime name and a few info
+          </p>
+        </div>
+        <div className="card">
+          <h3 className="card-title">Anime 3</h3>
+          <p className="card-description">
+            Anime name and a few info
+          </p>
+        </div>
+        <div className="card">
+          <h3 className="card-title">Anime 4</h3>
+          <p className="card-description">
+            Anime name and a few info
+          </p>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default HomePage;
