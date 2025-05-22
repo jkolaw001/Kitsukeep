@@ -1,5 +1,6 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import declarative_base, mapped_column, Mapped
+from datetime import datetime
 
 
 Base = declarative_base()
@@ -11,7 +12,8 @@ class DBUser(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     username: Mapped[str] = mapped_column(nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
-    email: Mapped[str] = mapped_column(nullable=False)
+    session_token: Mapped[str] = mapped_column(nullable=True)
+    session_expires_at: Mapped[datetime] = mapped_column(nullable=True)
 
 
 class DBPlaylist(Base):
