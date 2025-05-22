@@ -2,6 +2,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from fastapi import HTTPException
+from datetime import datetime, timedelta
+from secrets import token_urlsafe
+import bcrypt
 from schemas import (
     WatchlistCreate,
     WatchlistOut,
@@ -22,6 +25,7 @@ from db_models import DBNotes, DBPlaylist, DBUser, DBWatchlist, DBAnime
 
 
 DATABASE_URL = "postgresql+psycopg://postgres:postgres@localhost:5432/anime"
+SESSION_LIFE_MINUTES = 60 * 60 * 2
 
 engine = create_engine(DATABASE_URL)
 sessionLocal = sessionmaker(bind=engine)
@@ -337,3 +341,30 @@ def update_note(note_id: int, notes: NoteUpdate) -> NoteOut:
     db.refresh(note_model)
     db.close()
     return note_model
+
+
+def validate_username_password(username: str, password: str) -> str | None:
+    """
+    Validate a username and password against the database. If valid,
+    generates a new session token, updates the session expiration, and
+    returns the session token. Returns None if credentials are invalid.
+    """
+    # retrieve the user account from the database
+    with sessionLocal() as db:
+        account = db.query(DBUser).filter(DBUser.username == username).first()
+        if not account:
+            return None
+
+        # validate the provided credentials (username & password)
+        valid_credentials = bcrypt.checkpw(password.encode(), account.password.encode())
+        if not valid_credentials:
+            return None
+
+        # create a new session token and set the expiration date
+        session_token = token_urlsafe()
+        account.session_token = session_token
+        expires = datetime.now() + timedelta(minutes=SESSION_LIFE_MINUTES)
+        # assign as datetime, not isoformat
+        account.session_expires_at = expires
+        db.commit()
+        return session_token

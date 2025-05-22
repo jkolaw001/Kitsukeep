@@ -14,6 +14,7 @@ from db import (
     delete_anime_from_watchlist,
     delete_note,
     delete_user,
+    validate_username_password,
 )
 from schemas import (
     UserCreate,
@@ -141,6 +142,16 @@ async def session_login(
     username = credentials.username
     password = credentials.password
     new_session_token = validate_username_password(username, password)
+
+    # return a 401 (unauthorized) if invalid username/password combo
+    if not new_session_token:
+        raise HTTPException(status_code=401)
+
+    # store the user's username and the generated session_token
+    # in the user's session
+    request.session["username"] = username
+    request.session["session_token"] = new_session_token
+    return SuccessResponse(success=True)
 
 
 # Route to handle requests for static assets
