@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 from db import (
     create_user,
     get_all_watchlists,
@@ -30,6 +31,13 @@ from schemas import (
 
 
 app = FastAPI()
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key="some-random-string",
+    session_cookie="session",
+    max_age=60 * 60 * 2,  # 2 hours in seconds
+)
 
 origins = ["http://127.0.0.1:5173"]
 
