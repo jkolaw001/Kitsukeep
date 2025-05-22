@@ -391,3 +391,30 @@ def invalidate_session(username: str, session_token: str) -> None:
         # set the token to an invalid value that is unique
         account.session_token = f"expired-{token_urlsafe()}"
         db.commit()
+
+
+def create_user_account(username: str, password: str) -> bool:
+    """
+    Create a new user account with the given username and password.
+    Returns True if the account was created successfully, or False if the
+    username exists.
+    """
+    # Create a new user account.
+    # Returns True if successful, False if username exists.
+    with sessionLocal() as db:
+        # Check if username already exists
+        if db.query(DBUser).filter(DBUser.username == username).first():
+            return False
+        # Hash the password using bcrypt before storing it in the database.
+        # bcrypt.hashpw returns a hashed password as bytes,
+        # which we decode to a string.
+        hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+        account = DBUser(
+            username=username,
+            hashed_password=hashed_password,
+            session_token=None,
+            session_expires_at=None,
+        )
+        db.add(account)
+        db.commit()
+        return True

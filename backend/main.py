@@ -16,6 +16,7 @@ from db import (
     delete_user,
     validate_username_password,
     invalidate_session,
+    create_user_account,
 )
 from schemas import (
     UserCreate,
@@ -174,6 +175,31 @@ async def session_logout(request: Request) -> SuccessResponse:
 
     # clear out the session data
     request.session.clear()
+    return SuccessResponse(success=True)
+
+
+# Endpoint to handle signup requests
+@app.post("/api/signup", response_model=SuccessResponse)
+async def signup(credentials: LoginCredentials, request: Request) -> SuccessResponse:
+    """
+    Handle user signup.
+    Creates a new user account if username is available, then logs in
+    the user. Returns success if signup is successful, else raises 400
+    or 409.
+    """
+    username = credentials.username
+    password = credentials.password
+    # Check for empty username or password
+    if not username or not password:
+        raise HTTPException(status_code=400, detail="Username and password required")
+    # Use db.py helper to create the user account
+    success = create_user_account(username, password)
+    if not success:
+        raise HTTPException(status_code=409, detail="Username already exists")
+    # Automatically log in the user after signup
+    new_session_token = validate_username_password(username, password)
+    request.session["username"] = username
+    request.session["session_token"] = new_session_token
     return SuccessResponse(success=True)
 
 
