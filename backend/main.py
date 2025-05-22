@@ -15,6 +15,7 @@ from db import (
     delete_note,
     delete_user,
     validate_username_password,
+    invalidate_session,
 )
 from schemas import (
     UserCreate,
@@ -151,6 +152,28 @@ async def session_login(
     # in the user's session
     request.session["username"] = username
     request.session["session_token"] = new_session_token
+    return SuccessResponse(success=True)
+
+
+# Endpoint to handle logout requests
+@app.get("/api/logout", response_model=SuccessResponse)
+async def session_logout(request: Request) -> SuccessResponse:
+    """
+    Handle user logout.
+    Invalidates the session in the database and clears session data
+    from cookies. Returns success status.
+    """
+    # invalidate the session in the database
+    username = request.session.get("username")
+    if not username and not isinstance(username, str):
+        return SuccessResponse(success=False)
+    session_token = request.session.get("session_token")
+    if not session_token and not isinstance(session_token, str):
+        return SuccessResponse(success=False)
+    invalidate_session(username, session_token)
+
+    # clear out the session data
+    request.session.clear()
     return SuccessResponse(success=True)
 
 

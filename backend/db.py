@@ -368,3 +368,26 @@ def validate_username_password(username: str, password: str) -> str | None:
         account.session_expires_at = expires
         db.commit()
         return session_token
+
+
+def invalidate_session(username: str, session_token: str) -> None:
+    """
+    Invalidate a user's session by setting the session token to a unique
+    expired value.
+    """
+    # retrieve the user account for the given session token
+    with sessionLocal() as db:
+        account = (
+            db.query(DBUser)
+            .filter(
+                DBUser.username == username,
+                DBUser.session_token == session_token,
+            )
+            .first()
+        )
+        if not account:
+            return
+
+        # set the token to an invalid value that is unique
+        account.session_token = f"expired-{token_urlsafe()}"
+        db.commit()
