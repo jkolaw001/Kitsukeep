@@ -9,6 +9,11 @@ class UserBase(BaseModel):
     session_expired_at: datetime
 
 
+class AnimeSearchResult(BaseModel):
+    mal_id: int
+    image_url: str
+
+
 class AnimeBase(BaseModel):
     title: str
     description: str

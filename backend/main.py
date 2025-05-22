@@ -19,6 +19,7 @@ from db import (
     create_user_account,
     get_user_public_details,
     get_auth_user,
+    fetch_anime_results,
 )
 from schemas import (
     UserCreate,
@@ -36,6 +37,7 @@ from schemas import (
     SuccessResponse,
     SecretResponse,
     UserPublicDetails,
+    AnimeSearchResult,
 )
 
 
@@ -65,6 +67,17 @@ app.add_middleware(
 #     if not new_user:
 #         raise HTTPException(status_code=400, detail="User already exists")
 #     return new_user
+
+
+@app.get("/api/anime/search", response_model=list[AnimeSearchResult])
+async def search_anime(query: str):
+    try:
+        return fetch_anime_results(query)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"{e}: No anime with that title was found. Please try again.",
+        )
 
 
 @app.get("/api/anime")

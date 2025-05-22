@@ -5,6 +5,7 @@ from fastapi import HTTPException, Request
 from datetime import datetime, timedelta
 from secrets import token_urlsafe
 import bcrypt
+import requests
 from schemas import (
     WatchlistCreate,
     WatchlistOut,
@@ -20,6 +21,7 @@ from schemas import (
     NoteWithUserOut,
     WatchlistWithAnimeOut,
     NoteWithAnimeOut,
+    AnimeSearchResult,
 )
 from db_models import DBNotes, DBPlaylist, DBUser, DBWatchlist, DBAnime
 
@@ -484,3 +486,21 @@ def get_user_public_details(username: str):
         if not account:
             return None
         return UserPublicDetails(username=account.username)
+
+
+def fetch_anime_results(query: str) -> list[AnimeSearchResult]:
+    external_url = f"https://api.jikan.moe/v4/anime?q={query}&limit=10"
+    response = requests.get(external_url)
+
+    if not response.ok:
+        raise Exception("External API error")
+
+    data = response.json().get("data", [])
+    results = [
+        AnimeSearchResult(
+            mal_id=item["mal_id"],
+            image_url=item["images"]["jpg"]["image_url"],
+        )
+        for item in data
+    ]
+    return results
