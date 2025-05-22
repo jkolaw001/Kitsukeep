@@ -4,7 +4,7 @@ from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from db import (
-    create_user,
+    # create_user,
     get_all_watchlists,
     create_note,
     create_watchlist,
@@ -59,12 +59,12 @@ app.add_middleware(
 )
 
 
-@app.post("/api/users")
-async def add_user(user: UserCreate) -> UserOut:
-    new_user = create_user(user)
-    if not new_user:
-        raise HTTPException(status_code=400, detail="User already exists")
-    return new_user
+# @app.post("/api/users")
+# async def add_user(user: UserCreate) -> UserOut:
+#     new_user = create_user(user)
+#     if not new_user:
+#         raise HTTPException(status_code=400, detail="User already exists")
+#     return new_user
 
 
 @app.get("/api/anime")

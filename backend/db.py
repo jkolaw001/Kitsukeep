@@ -58,21 +58,20 @@ def get_all_watchlists() -> list[WatchlistWithAnimeOut]:
     return result
 
 
-def create_user(user: UserCreate) -> UserOut:
-    db = sessionLocal()
-    new_user = DBUser(**user.model_dump())
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+# def create_user(user: UserCreate) -> UserOut:
+#     db = sessionLocal()
+#     new_user = DBUser(**user.model_dump())
+#     db.add(new_user)
+#     db.commit()
+#     db.refresh(new_user)
 
-    result = UserOut(
-        id=new_user.id,
-        username=new_user.username,
-        password=new_user.password,
-        email=new_user.email,
-    )
-    db.close()
-    return result
+#     result = UserOut(
+#         id=new_user.id,
+#         username=new_user.username,
+#         password=new_user.password,
+#     )
+#     db.close()
+#     return result
 
 
 def create_watchlist(watchlist: WatchlistCreate) -> WatchlistOut:

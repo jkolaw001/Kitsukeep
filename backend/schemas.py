@@ -1,10 +1,12 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class UserBase(BaseModel):
     username: str
     password: str
-    email: str
+    session_token: str
+    session_expired_at: datetime
 
 
 class AnimeBase(BaseModel):
