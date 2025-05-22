@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.responses import FileResponse
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,6 +17,8 @@ from db import (
     validate_username_password,
     invalidate_session,
     create_user_account,
+    get_user_public_details,
+    get_auth_user,
 )
 from schemas import (
     UserCreate,
@@ -201,6 +203,25 @@ async def signup(credentials: LoginCredentials, request: Request) -> SuccessResp
     request.session["username"] = username
     request.session["session_token"] = new_session_token
     return SuccessResponse(success=True)
+
+
+@app.get(
+    "/api/me",
+    response_model=UserPublicDetails,
+    dependencies=[Depends(get_auth_user)],
+)
+async def get_me(request: Request) -> UserPublicDetails:
+    """
+    Returns the public details of the currently authenticated user.
+    Raises 404 if the user is not found in the database.
+    """
+    username = request.session.get("username")
+    if not isinstance(username, str):
+        raise HTTPException(status_code=404, detail="User not found")
+    user_details = get_user_public_details(username)
+    if not user_details:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user_details
 
 
 # Route to handle requests for static assets

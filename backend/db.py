@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
 from datetime import datetime, timedelta
 from secrets import token_urlsafe
 import bcrypt
@@ -418,3 +418,70 @@ def create_user_account(username: str, password: str) -> bool:
         db.add(account)
         db.commit()
         return True
+
+
+def validate_session(username: str, session_token: str) -> bool:
+    """
+    Validate a session token for a given username. Returns True if the
+    session is valid and not expired, and updates the session expiration.
+    Returns False otherwise.
+    """
+    # retrieve the user account for the given session token
+    with sessionLocal() as db:
+        account = (
+            db.query(DBUser)
+            .filter(
+                DBUser.username == username,
+                DBUser.session_token == session_token,
+            )
+            .first()
+        )
+        if not account:
+            return False
+
+        # validate that it is not expired
+        if datetime.now() >= account.session_expires_at:
+            return False
+
+        # update the expiration date and save to the database
+        expires = datetime.now() + timedelta(minutes=SESSION_LIFE_MINUTES)
+        # assign as datetime, not isoformat
+        account.session_expires_at = expires
+        db.commit()
+        return True
+
+
+# This is an authentication function which can be Depend'd
+# on by a route to require authentication for access to the route.
+# See the next route below (@app.get("/", ...)) for an example.
+def get_auth_user(request: Request):
+    """
+    Dependency for protected routes.
+    Verifies that the user has a valid session. Raises 401 if not
+    authenticated, 403 if session is invalid. Returns True if
+    authenticated.
+    """
+    """verify that user has a valid session"""
+    username = request.session.get("username")
+    if not username and not isinstance(username, str):
+        raise HTTPException(status_code=401)
+    session_token = request.session.get("session_token")
+    if not session_token and not isinstance(session_token, str):
+        raise HTTPException(status_code=401)
+    if not validate_session(username, session_token):
+        raise HTTPException(status_code=403)
+    return True
+
+
+def get_user_public_details(username: str):
+    """
+    Fetch public details for a user by username. Returns a UserPublicDetails
+    object if found, or None if not found.
+    """
+    from schemas import UserPublicDetails
+
+    with sessionLocal() as db:
+        account = db.query(DBUser).filter(DBUser.username == username).first()
+        if not account:
+            return None
+        return UserPublicDetails(username=account.username)
