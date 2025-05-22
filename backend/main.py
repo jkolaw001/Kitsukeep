@@ -27,6 +27,10 @@ from schemas import (
     NoteWithUserOut,
     NoteWithAnimeOut,
     WatchlistWithAnimeOut,
+    LoginCredentials,
+    SuccessResponse,
+    SecretResponse,
+    UserPublicDetails,
 )
 
 
@@ -121,6 +125,22 @@ async def remove_user(user_id: int):
     if not user_to_delete:
         raise HTTPException(status_code=404, detail="User not found")
     return user_to_delete
+
+
+# Endpoint to handle login requests
+@app.post("/api/login", response_model=SuccessResponse)
+async def session_login(
+    credentials: LoginCredentials, request: Request
+) -> SuccessResponse:
+    """
+    Handle user login.
+    Validates credentials, creates a session, and stores session info
+    in cookies. Returns success if login is valid, else raises 401.
+    """
+    # validate the username and password
+    username = credentials.username
+    password = credentials.password
+    new_session_token = validate_username_password(username, password)
 
 
 # Route to handle requests for static assets

@@ -99,3 +99,21 @@ class NoteWithAnimeOut(BaseModel):
     note: str
     anime_id: int
     username: str
+
+
+class LoginCredentials(BaseModel):
+    username: str
+    password: str
+
+
+class SuccessResponse(BaseModel):
+    success: bool
+
+
+class SecretResponse(BaseModel):
+    secret: str
+
+
+class UserPublicDetails(BaseModel):
+    username: str
+    # Add more public fields here if needed
