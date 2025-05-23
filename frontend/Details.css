@@ -1,0 +1,21 @@
+.detail-image {
+  border-radius: 25px;
+}
+
+.watchlist-button {
+  background-color: blue;
+  color: white;
+}
+
+.trailer-link {
+  text-decoration: underline;
+}
+
+body {
+  background-image: url(hatsume.png) ;
+}
+
+.remove-button {
+  background-color: blue;
+  color: red;
+}
