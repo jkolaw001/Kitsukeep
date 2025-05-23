@@ -55,6 +55,11 @@ body {
   transition: opacity 0.2s ease;
 }
 
+.watchlist-container {
+    margin-top: 5rem;
+    padding: 0 11rem;
+}
+
 .main-logo:hover {
   opacity: 0.8;
 }
