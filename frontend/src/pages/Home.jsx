@@ -13,7 +13,7 @@ function HomePage() {
         <div className="header">
           <div className="left-section">
             <Link to='/' className="main-logo">
-              Kitsukeep.
+              Kitsukeep
             </Link>
             <Link to="/Watchlist" className="menu-button">Watchlist</Link>
             <a href="#" className="menu-button">Playlists</a>
