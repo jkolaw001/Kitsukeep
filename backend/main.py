@@ -115,7 +115,7 @@ async def add_note(anime_id: int, note: NoteCreate) -> NoteOut:
 
 @app.post(
     "/api/watchlists",
-    response_model=UserPublicDetails,
+    response_model=WatchlistOut,
     dependencies=[Depends(get_auth_user)],
 )
 async def add_watchlist(watchlist: AnimeCreate, request: Request) -> WatchlistOut:

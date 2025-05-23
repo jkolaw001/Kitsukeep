@@ -104,7 +104,7 @@ def create_watchlist_entry(anime: AnimeCreate, request: Request) -> WatchlistOut
         db.close()
         return result
 
-    add_to_watchlist = DBWatchlist(anime_id=check.id, user_id=username)
+    add_to_watchlist = DBWatchlist(anime_id=check.id, user_id=user_id)
     db.add(add_to_watchlist)
     db.commit()
     db.refresh(add_to_watchlist)
