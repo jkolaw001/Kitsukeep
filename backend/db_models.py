@@ -51,6 +51,7 @@ class DBAnime(Base):
     rating: Mapped[str] = mapped_column(nullable=False)
     img_url: Mapped[str] = mapped_column(nullable=True)
     trailer: Mapped[str] = mapped_column(nullable=True)
+    mal_id: Mapped[str] = mapped_column(nullable=False, unique=True)
 
 
 class DBSong(Base):

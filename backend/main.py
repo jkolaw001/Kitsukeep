@@ -7,7 +7,7 @@ from db import (
     # create_user,
     get_all_watchlists,
     create_note,
-    create_watchlist,
+    create_watchlist_entry,
     get_all_anime,
     get_anime,
     get_all_notes_by_anime,
@@ -115,7 +115,7 @@ async def add_note(anime_id: int, note: NoteCreate) -> NoteOut:
 
 @app.post("/api/watchlists")
 async def add_watchlist(watchlist: WatchlistCreate) -> WatchlistOut:
-    new_watchlist = create_watchlist(watchlist)
+    new_watchlist = create_watchlist_entry(watchlist)
     if not new_watchlist:
         raise HTTPException(status_code=400, detail="Watchlist already exists")
     return new_watchlist
