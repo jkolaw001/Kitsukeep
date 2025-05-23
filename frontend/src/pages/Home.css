@@ -11,7 +11,13 @@ body {
 }
 
 
-
+@font-face {
+    font-family: 'Haruto';
+    src: url('public/fonts/haruto-font/HarutoPersonalUse-gwM5R.ttf') format('truetype');
+    font-display: swap;
+    font-weight: normal;
+    font-style: normal;
+}
 
 .nav-container {
   position: fixed;
@@ -47,12 +53,21 @@ body {
 }
 
 .main-logo {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 54px;
+  font-family: 'Haruto';
+  font-weight: 1000;
   color: yellow;
   text-decoration: none;
   letter-spacing: -0.5px;
   transition: opacity 0.2s ease;
+  text-shadow:
+                0 0 5px rgba(255, 255, 255, 0.8),
+                0 0 10px rgba(255, 255, 255, 0.6),
+                0 0 15px rgba(255, 255, 255, 0.4),
+                0 0 20px rgba(255, 255, 255, 0.3),
+                0 0 30px rgba(102, 126, 234, 0.4),
+                0 0 40px rgba(118, 75, 162, 0.3);
+            animation: glow 2s ease-in-out infinite alternate;
 }
 
 .main-logo:hover {
@@ -66,7 +81,6 @@ body {
   font-size: 16px;
   font-weight: 500;
   padding: 8px 16px;
-  /* border-radius: 8px; */
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
@@ -132,7 +146,6 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  /* backdrop-filter: blur(10px); */
 }
 
 .user-menu:hover,

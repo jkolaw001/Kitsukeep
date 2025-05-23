@@ -2,6 +2,9 @@ import { useState } from "react";
 import "./Home.css";
 import { Link } from "react-router-dom";
 import WatchlistPage from "./Watchlist.jsx";
+import Login from "../loginpages/Login.jsx";
+import Logout from '../loginpages/Logout.jsx'
+import Signup from '../loginpages/Signup.jsx'
 
 function HomePage() {
   return (
@@ -10,7 +13,7 @@ function HomePage() {
         <div className="header">
           <div className="left-section">
             <Link to='/' className="main-logo">
-              Kitsukeep
+              Kitsukeep.
             </Link>
             <Link to="/Watchlist" className="menu-button">Watchlist</Link>
             <a href="#" className="menu-button">Playlists</a>
@@ -30,6 +33,19 @@ function HomePage() {
 
             <button className="language-button">
               EN
+              <span className="icon">▼</span>
+            </button>
+
+            <button className="user-menu">
+              <Link to="/Login" className="icon">Log in</Link>
+              <span className="icon">▼</span>
+            </button>
+            <button className="user-menu">
+              <Link to="/Logout" className="icon">Log Out</Link>
+              <span className="icon">▼</span>
+            </button>
+             <button className="user-menu">
+              <Link to="/Signup" className="icon">Sign</Link>
               <span className="icon">▼</span>
             </button>
           </div>
