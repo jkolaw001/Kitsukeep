@@ -18,4 +18,4 @@ def get_auth_user(request: Request):
         raise HTTPException(status_code=401)
     if not validate_session(username, session_token):
         raise HTTPException(status_code=403)
-    return True, username
+    return True

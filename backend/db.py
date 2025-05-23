@@ -6,7 +6,8 @@ from datetime import datetime, timedelta
 from secrets import token_urlsafe
 import bcrypt
 import requests
-from authenticate import get_auth_user
+
+# from authenticate import get_auth_user
 from schemas import (
     WatchlistCreate,
     WatchlistOut,
@@ -77,37 +78,43 @@ def get_all_watchlists() -> list[WatchlistWithAnimeOut]:
 #     return result
 
 
-def create_watchlist_entry(anime: AnimeCreate) -> WatchlistOut:
+def create_watchlist_entry(anime: AnimeCreate, request: Request) -> WatchlistOut:
 
     db = sessionLocal()
-    username = get_auth_user(request)
+    username = request.session.get("username")
+    user_id = db.query(DBUser.id).filter(DBUser.username == username).scalar()
+    if user_id is None:
+        raise HTTPException(status_code=404, detail="User not found")
     check = db.query(DBAnime).where(DBAnime.mal_id == anime.mal_id).first()
-    if check:
-        add_to_watchlist = DBWatchlist(anime_id=check.id, user_id=user_id)
+    if not check:
+        new_anime = DBAnime(**anime.model_dump())
+        db.add(new_anime)
+        db.commit()
+        db.refresh(new_anime)
+        add_to_watchlist = DBWatchlist(anime_id=new_anime.id, user_id=user_id)
         db.add(add_to_watchlist)
         db.commit()
         db.refresh(add_to_watchlist)
-
         result = WatchlistOut(
             watchlist_id=add_to_watchlist.id,
             user_id=add_to_watchlist.user_id,
             anime_id=add_to_watchlist.anime_id,
         )
+
         db.close()
         return result
-    new_anime = DBAnime(**anime.model_dump())
-    db.add(new_anime)
-    db.commit()
-    db.refresh(new_anime)
-    add_to_watchlist = DBWatchlist(anime_id=new_anime.id, user_id=user_id)
+
+    add_to_watchlist = DBWatchlist(anime_id=check.id, user_id=username)
     db.add(add_to_watchlist)
     db.commit()
     db.refresh(add_to_watchlist)
+
     result = WatchlistOut(
         watchlist_id=add_to_watchlist.id,
         user_id=add_to_watchlist.user_id,
         anime_id=add_to_watchlist.anime_id,
     )
+
     db.close()
     return result
 
@@ -476,23 +483,23 @@ def validate_session(username: str, session_token: str) -> bool:
 # This is an authentication function which can be Depend'd
 # on by a route to require authentication for access to the route.
 # See the next route below (@app.get("/", ...)) for an example.
-def get_auth_user(request: Request):
-    """
-    Dependency for protected routes.
-    Verifies that the user has a valid session. Raises 401 if not
-    authenticated, 403 if session is invalid. Returns True if
-    authenticated.
-    """
-    """verify that user has a valid session"""
-    username = request.session.get("username")
-    if not username and not isinstance(username, str):
-        raise HTTPException(status_code=401)
-    session_token = request.session.get("session_token")
-    if not session_token and not isinstance(session_token, str):
-        raise HTTPException(status_code=401)
-    if not validate_session(username, session_token):
-        raise HTTPException(status_code=403)
-    return True
+# def get_auth_user(request: Request):
+#     """
+#     Dependency for protected routes.
+#     Verifies that the user has a valid session. Raises 401 if not
+#     authenticated, 403 if session is invalid. Returns True if
+#     authenticated.
+#     """
+#     """verify that user has a valid session"""
+#     username = request.session.get("username")
+#     if not username and not isinstance(username, str):
+#         raise HTTPException(status_code=401)
+#     session_token = request.session.get("session_token")
+#     if not session_token and not isinstance(session_token, str):
+#         raise HTTPException(status_code=401)
+#     if not validate_session(username, session_token):
+#         raise HTTPException(status_code=403)
+#     return True
 
 
 def get_user_public_details(username: str):

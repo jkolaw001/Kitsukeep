@@ -3,6 +3,7 @@ from fastapi.responses import FileResponse
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
+from authenticate import get_auth_user
 from db import (
     # create_user,
     get_all_watchlists,
@@ -18,7 +19,6 @@ from db import (
     invalidate_session,
     create_user_account,
     get_user_public_details,
-    get_auth_user,
     fetch_anime_results,
 )
 from schemas import (
@@ -113,9 +113,13 @@ async def add_note(anime_id: int, note: NoteCreate) -> NoteOut:
     return new_note
 
 
-@app.post("/api/watchlists")
-async def add_watchlist(watchlist: WatchlistCreate) -> WatchlistOut:
-    new_watchlist = create_watchlist_entry(watchlist)
+@app.post(
+    "/api/watchlists",
+    response_model=UserPublicDetails,
+    dependencies=[Depends(get_auth_user)],
+)
+async def add_watchlist(watchlist: AnimeCreate, request: Request) -> WatchlistOut:
+    new_watchlist = create_watchlist_entry(watchlist, request)
     if not new_watchlist:
         raise HTTPException(status_code=400, detail="Watchlist already exists")
     return new_watchlist
