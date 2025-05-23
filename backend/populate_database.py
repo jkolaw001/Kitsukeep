@@ -21,6 +21,7 @@ def fetch_top_anime() -> list[AnimeOut]:
             rating=anime["rating"],
             img_url=anime["images"]["jpg"]["image_url"],
             trailer=anime["trailer"]["url"],
+            mal_id=anime["mal_id"],
         )
         for anime in data
     ]
@@ -39,6 +40,10 @@ def fetch_top_anime() -> list[AnimeOut]:
             rating=anime_model.rating,
             img_url=anime_model.img_url,
             trailer=anime_model.trailer,
+            mal_id=anime_model.mal_id,
         )
         added_anime.append(new_anime)
     return added_anime
+
+
+fetch_top_anime()

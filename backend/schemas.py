@@ -26,6 +26,7 @@ class AnimeBase(BaseModel):
     rating: str | None
     img_url: str | None
     trailer: str | None
+    mal_id: int
 
 
 class NoteBase(BaseModel):

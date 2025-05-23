@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from secrets import token_urlsafe
 import bcrypt
 import requests
+from authenticate import get_auth_user
 from schemas import (
     WatchlistCreate,
     WatchlistOut,
@@ -76,19 +77,36 @@ def get_all_watchlists() -> list[WatchlistWithAnimeOut]:
 #     return result
 
 
-def create_watchlist_entry(watchlist: WatchlistCreate) -> WatchlistOut:
+def create_watchlist_entry(anime: AnimeCreate) -> WatchlistOut:
 
     db = sessionLocal()
-    watchlist_model = DBWatchlist(**watchlist.model_dump())
+    username = get_auth_user(request)
+    check = db.query(DBAnime).where(DBAnime.mal_id == anime.mal_id).first()
+    if check:
+        add_to_watchlist = DBWatchlist(anime_id=check.id, user_id=user_id)
+        db.add(add_to_watchlist)
+        db.commit()
+        db.refresh(add_to_watchlist)
 
-    db.add(watchlist_model)
+        result = WatchlistOut(
+            watchlist_id=add_to_watchlist.id,
+            user_id=add_to_watchlist.user_id,
+            anime_id=add_to_watchlist.anime_id,
+        )
+        db.close()
+        return result
+    new_anime = DBAnime(**anime.model_dump())
+    db.add(new_anime)
     db.commit()
-    db.refresh(watchlist_model)
-
+    db.refresh(new_anime)
+    add_to_watchlist = DBWatchlist(anime_id=new_anime.id, user_id=user_id)
+    db.add(add_to_watchlist)
+    db.commit()
+    db.refresh(add_to_watchlist)
     result = WatchlistOut(
-        watchlist_id=watchlist_model.id,
-        user_id=watchlist_model.user_id,
-        anime_id=watchlist_model.anime_id,
+        watchlist_id=add_to_watchlist.id,
+        user_id=add_to_watchlist.user_id,
+        anime_id=add_to_watchlist.anime_id,
     )
     db.close()
     return result
@@ -149,6 +167,7 @@ def create_anime(anime: AnimeCreate) -> AnimeOut:
         rating=anime_model.rating,
         img_url=anime_model.img_url,
         trailer=anime_model.trailer,
+        mal_id=anime_model.mal_id,
     )
     db.close()
     return result
@@ -167,6 +186,7 @@ def get_anime(anime_id: int) -> AnimeOut | None:
         rating=anime.rating,
         img_url=anime.img_url,
         trailer=anime.trailer,
+        mal_id=anime.mal_id,
     )
     db.close()
     return chosen_anime
@@ -215,6 +235,7 @@ def get_all_anime() -> list[AnimeOut]:
                 rating=db_anime.rating,
                 img_url=db_anime.img_url,
                 trailer=db_anime.trailer,
+                mal_id=db_anime.mal_id,
             )
         )
     db.close()
@@ -509,4 +530,3 @@ def fetch_anime_results(query: str) -> list[AnimeSearchResult]:
         for item in data
     ]
     return results
-
