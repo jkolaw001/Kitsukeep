@@ -169,7 +169,93 @@ export async function deleteUser(user_id) {
     }
 }
 // validate_username_password - api/login
+export async function login() {
+    try {
+        const response = await fetch (`${baseURL}/api/login`);
+        if (!response.ok) {
+            throw new Error(`${response.status}`)
+        }
+        const data = await response.json()
+        return data;
+    } catch (e) {
+        console.error(e);
+        if (e instanceof Error) {
+            return e;
+        }
+        return new Error("Unexpected Error");
+    }
+}
 // invalidate_session - /api/logout
+export async function logout() {
+    try {
+        const response = await fetch (`${baseURL}/api/logout`);
+        if (!response.ok) {
+            throw new Error(`${response.status}`)
+        }
+        const data = await response.json()
+        return data;
+    } catch (e) {
+        console.error(e);
+        if (e instanceof Error) {
+            return e;
+        }
+        return new Error("Unexpected Error");
+    }
+}
 // create_user_account - /api/signup
+export async function signup(new_user) {
+    try {
+        const response = await fetch (`${baseURL}/api/signup`, {
+            method: "POST",
+            headers: {
+                "Content-Type" : "application/json",
+            }, body: JSON.stringify(new_user),
+        }
+        );
+        if (!response.ok) {
+            throw new Error(`${response.status}`);
+        }
+        const data = await response.json()
+        return data;
+    } catch (e) {
+        console.error(e);
+        if (e instanceof Error) {
+            return e;
+        }
+        return new Error("Unexpected Error");
+    }
+}
 // get_user_public_details - /api/me
+export async function getUserDetails() {
+    try {
+        const response = await fetch (`${baseURL}/api/me`);
+        if (!response.ok) {
+            throw new Error(`${response.status}`)
+        }
+        const data = await response.json()
+        return data;
+    } catch (e) {
+        console.error(e);
+        if (e instanceof Error) {
+            return e;
+        }
+        return new Error("Unexpected Error");
+    }
+}
 // fetch_anime_results - /api/anime/search
+export async function getAnimeResults() {
+    try {
+        const response = await fetch (`${baseURL}/api/anime/search`);
+        if (!response.ok) {
+            throw new Error(`${response.status}`)
+        }
+        const data = await response.json()
+        return data;
+    } catch (e) {
+        console.error(e);
+        if (e instanceof Error) {
+            return e;
+        }
+        return new Error("Unexpected Error");
+    }
+}
