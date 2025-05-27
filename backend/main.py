@@ -3,11 +3,12 @@ from fastapi.responses import FileResponse
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
+from authenticate import get_auth_user
 from db import (
     # create_user,
     get_all_watchlists,
     create_note,
-    create_watchlist,
+    create_watchlist_entry,
     get_all_anime,
     get_anime,
     get_all_notes_by_anime,
@@ -18,7 +19,7 @@ from db import (
     invalidate_session,
     create_user_account,
     get_user_public_details,
-    get_auth_user,
+    fetch_anime_results,
 )
 from schemas import (
     UserCreate,
@@ -36,6 +37,7 @@ from schemas import (
     SuccessResponse,
     SecretResponse,
     UserPublicDetails,
+    AnimeSearchResult,
 )
 
 
@@ -65,6 +67,17 @@ app.add_middleware(
 #     if not new_user:
 #         raise HTTPException(status_code=400, detail="User already exists")
 #     return new_user
+
+
+@app.get("/api/anime/search", response_model=list[AnimeSearchResult])
+async def search_anime(query: str):
+    try:
+        return fetch_anime_results(query)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"{e}: No anime with that title was found. Please try again.",
+        )
 
 
 @app.get("/api/anime")
@@ -100,9 +113,13 @@ async def add_note(anime_id: int, note: NoteCreate) -> NoteOut:
     return new_note
 
 
-@app.post("/api/watchlists")
-async def add_watchlist(watchlist: WatchlistCreate) -> WatchlistOut:
-    new_watchlist = create_watchlist(watchlist)
+@app.post(
+    "/api/watchlists",
+    response_model=WatchlistOut,
+    dependencies=[Depends(get_auth_user)],
+)
+async def add_watchlist(watchlist: AnimeCreate, request: Request) -> WatchlistOut:
+    new_watchlist = create_watchlist_entry(watchlist, request)
     if not new_watchlist:
         raise HTTPException(status_code=400, detail="Watchlist already exists")
     return new_watchlist

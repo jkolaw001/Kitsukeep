@@ -21,9 +21,10 @@ CREATE TABLE anime (
     title VARCHAR(255) NOT NULL,
     description TEXT,
     genre VARCHAR(100),
-    rating VARCHAR(10),
+    rating VARCHAR(200),
     img_url VARCHAR(255),
-    trailer VARCHAR(255)
+    trailer VARCHAR(255),
+    mal_id INT UNIQUE NOT NULL
 );
 
 -- NOTES TABLE

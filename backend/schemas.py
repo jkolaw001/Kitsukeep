@@ -9,13 +9,24 @@ class UserBase(BaseModel):
     session_expired_at: datetime
 
 
+class AnimeSearchResult(BaseModel):
+    mal_id: int
+    image_url: str | None
+    title: str
+    description: str | None
+    genre: str | None
+    rating: str | None
+    trailer: str | None
+
+
 class AnimeBase(BaseModel):
     title: str
-    description: str
-    genre: str
-    rating: str
-    img_url: str
-    trailer: str
+    description: str | None
+    genre: str | None
+    rating: str | None
+    img_url: str | None
+    trailer: str | None
+    mal_id: int
 
 
 class NoteBase(BaseModel):

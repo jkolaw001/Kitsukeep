@@ -5,6 +5,9 @@ from fastapi import HTTPException, Request
 from datetime import datetime, timedelta
 from secrets import token_urlsafe
 import bcrypt
+import requests
+
+# from authenticate import get_auth_user
 from schemas import (
     WatchlistCreate,
     WatchlistOut,
@@ -20,6 +23,7 @@ from schemas import (
     NoteWithUserOut,
     WatchlistWithAnimeOut,
     NoteWithAnimeOut,
+    AnimeSearchResult,
 )
 from db_models import DBNotes, DBPlaylist, DBUser, DBWatchlist, DBAnime
 
@@ -74,20 +78,43 @@ def get_all_watchlists() -> list[WatchlistWithAnimeOut]:
 #     return result
 
 
-def create_watchlist(watchlist: WatchlistCreate) -> WatchlistOut:
+def create_watchlist_entry(anime: AnimeCreate, request: Request) -> WatchlistOut:
 
     db = sessionLocal()
-    watchlist_model = DBWatchlist(**watchlist.model_dump())
+    username = request.session.get("username")
+    user_id = db.query(DBUser.id).filter(DBUser.username == username).scalar()
+    if user_id is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    check = db.query(DBAnime).where(DBAnime.mal_id == anime.mal_id).first()
+    if not check:
+        new_anime = DBAnime(**anime.model_dump())
+        db.add(new_anime)
+        db.commit()
+        db.refresh(new_anime)
+        add_to_watchlist = DBWatchlist(anime_id=new_anime.id, user_id=user_id)
+        db.add(add_to_watchlist)
+        db.commit()
+        db.refresh(add_to_watchlist)
+        result = WatchlistOut(
+            watchlist_id=add_to_watchlist.id,
+            user_id=add_to_watchlist.user_id,
+            anime_id=add_to_watchlist.anime_id,
+        )
 
-    db.add(watchlist_model)
+        db.close()
+        return result
+
+    add_to_watchlist = DBWatchlist(anime_id=check.id, user_id=user_id)
+    db.add(add_to_watchlist)
     db.commit()
-    db.refresh(watchlist_model)
+    db.refresh(add_to_watchlist)
 
     result = WatchlistOut(
-        watchlist_id=watchlist_model.id,
-        user_id=watchlist_model.user_id,
-        anime_id=watchlist_model.anime_id,
+        watchlist_id=add_to_watchlist.id,
+        user_id=add_to_watchlist.user_id,
+        anime_id=add_to_watchlist.anime_id,
     )
+
     db.close()
     return result
 
@@ -147,6 +174,7 @@ def create_anime(anime: AnimeCreate) -> AnimeOut:
         rating=anime_model.rating,
         img_url=anime_model.img_url,
         trailer=anime_model.trailer,
+        mal_id=anime_model.mal_id,
     )
     db.close()
     return result
@@ -165,6 +193,7 @@ def get_anime(anime_id: int) -> AnimeOut | None:
         rating=anime.rating,
         img_url=anime.img_url,
         trailer=anime.trailer,
+        mal_id=anime.mal_id,
     )
     db.close()
     return chosen_anime
@@ -213,6 +242,7 @@ def get_all_anime() -> list[AnimeOut]:
                 rating=db_anime.rating,
                 img_url=db_anime.img_url,
                 trailer=db_anime.trailer,
+                mal_id=db_anime.mal_id,
             )
         )
     db.close()
@@ -453,23 +483,23 @@ def validate_session(username: str, session_token: str) -> bool:
 # This is an authentication function which can be Depend'd
 # on by a route to require authentication for access to the route.
 # See the next route below (@app.get("/", ...)) for an example.
-def get_auth_user(request: Request):
-    """
-    Dependency for protected routes.
-    Verifies that the user has a valid session. Raises 401 if not
-    authenticated, 403 if session is invalid. Returns True if
-    authenticated.
-    """
-    """verify that user has a valid session"""
-    username = request.session.get("username")
-    if not username and not isinstance(username, str):
-        raise HTTPException(status_code=401)
-    session_token = request.session.get("session_token")
-    if not session_token and not isinstance(session_token, str):
-        raise HTTPException(status_code=401)
-    if not validate_session(username, session_token):
-        raise HTTPException(status_code=403)
-    return True
+# def get_auth_user(request: Request):
+#     """
+#     Dependency for protected routes.
+#     Verifies that the user has a valid session. Raises 401 if not
+#     authenticated, 403 if session is invalid. Returns True if
+#     authenticated.
+#     """
+#     """verify that user has a valid session"""
+#     username = request.session.get("username")
+#     if not username and not isinstance(username, str):
+#         raise HTTPException(status_code=401)
+#     session_token = request.session.get("session_token")
+#     if not session_token and not isinstance(session_token, str):
+#         raise HTTPException(status_code=401)
+#     if not validate_session(username, session_token):
+#         raise HTTPException(status_code=403)
+#     return True
 
 
 def get_user_public_details(username: str):
@@ -484,3 +514,26 @@ def get_user_public_details(username: str):
         if not account:
             return None
         return UserPublicDetails(username=account.username)
+
+
+def fetch_anime_results(query: str) -> list[AnimeSearchResult]:
+    external_url = f"https://api.jikan.moe/v4/anime?q={query}&limit=10"
+    response = requests.get(external_url)
+
+    if not response.ok:
+        raise Exception("External API error")
+
+    data = response.json().get("data", [])
+    results = [
+        AnimeSearchResult(
+            mal_id=item["mal_id"],
+            image_url=item["images"]["jpg"]["image_url"],
+            title=item["title"],
+            description=item["synopsis"],
+            genre=item["genres"][0]["name"],
+            rating=item["rating"],
+            trailer=item["trailer"]["url"],
+        )
+        for item in data
+    ]
+    return results
