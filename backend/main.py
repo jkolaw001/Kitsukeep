@@ -107,7 +107,11 @@ async def get_notes_by_anime_id(anime_id: int) -> list[NoteWithAnimeOut] | None:
     return notes
 
 
-@app.post("/api/anime/{anime_id}/notes")
+@app.post(
+    "/api/anime/{anime_id}/notes",
+    response_model=NoteOut,
+    dependencies=[Depends(get_auth_user)],
+)
 async def add_note(anime_id: int, note: NoteCreate) -> NoteOut:
     new_note = create_note(note, anime_id)
     return new_note
@@ -125,25 +129,37 @@ async def add_watchlist(watchlist: AnimeCreate, request: Request) -> WatchlistOu
     return new_watchlist
 
 
-@app.delete("/api/watchlists/{anime_id}")
-async def remove_from_watchlist(anime_id: int, user_id: int):
-    anime_to_delete = delete_anime_from_watchlist(anime_id, user_id)
+@app.delete(
+    "/api/watchlists/{anime_id}",
+    response_model=None,
+    dependencies=[Depends(get_auth_user)],
+)
+async def remove_from_watchlist(anime_id: int, request: Request):
+    anime_to_delete = delete_anime_from_watchlist(anime_id, request)
     if not anime_to_delete:
         raise HTTPException(status_code=404, detail="Anime not found in watchlist")
     return anime_to_delete
 
 
-@app.delete("/api/anime/{anime_id}/notes/{note_id}")
-async def remove_note_from_anime(anime_id: int, note_id: int):
-    note_to_delete = delete_note(anime_id, note_id)
+@app.delete(
+    "/api/anime/{anime_id}/notes/{note_id}",
+    response_model=None,
+    dependencies=[Depends(get_auth_user)],
+)
+async def remove_note_from_anime(anime_id: int, note_id: int, request: Request):
+    note_to_delete = delete_note(anime_id, note_id, request)
     if not note_to_delete:
         raise HTTPException(status_code=404, detail="Note not found")
     return note_to_delete
 
 
-@app.delete("/api/users/{user_id}")
-async def remove_user(user_id: int):
-    user_to_delete = delete_user(user_id)
+@app.delete(
+    "/api/users/{user_id}",
+    response_model=None,
+    dependencies=[Depends(get_auth_user)],
+)
+async def remove_user(request: Request):
+    user_to_delete = delete_user(request)
     if not user_to_delete:
         raise HTTPException(status_code=404, detail="User not found")
     return user_to_delete
