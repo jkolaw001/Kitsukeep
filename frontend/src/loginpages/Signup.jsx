@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useUser } from "./UserProvider.jsx";
 import { useNavigate, Link } from "react-router-dom";
+import "./Login.css";
 
 const API_BASE = "http://localhost:8000";
 
@@ -9,9 +10,8 @@ const API_BASE = "http://localhost:8000";
  * @returns {import('react').ReactElement}
  */
 export default function Signup() {
-    // Local state for error messages.
     const [error, setError] = useState("");
-    // useUser provides refreshUser to update user context after signup.
+    const [isLoading, setIsLoading] = useState(false);
     const { refreshUser } = useUser();
     const navigate = useNavigate();
 
@@ -22,62 +22,96 @@ export default function Signup() {
      */
     async function handleSignup(formData) {
         setError("");
-        // Prepare signup data from form fields.
-        const username = formData.get("username");
-        const password = formData.get("password");
-        const password2 = formData.get("password2");
-        if (password !== password2) {
-            setError("Passwords do not match");
-            return;
-        }
-        const data = {
-            username,
-            password,
-        };
-        // Call the backend signup endpoint. 'credentials: "include"' sends cookies for session auth.
-        const res = await fetch(`${API_BASE}/api/signup`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify(data),
-        });
-        if (res.ok) {
-            // On success, update user context and redirect to home.
-            await refreshUser();
-            navigate("/");
-        } else {
-            // On error, show error message from backend.
-            const err = await res.json();
-            setError(err.detail || "Signup failed");
+        setIsLoading(true);
+
+        try {
+            const data = {
+                username: formData.get("username"),
+                password: formData.get("password"),
+            };
+
+            const response = await fetch(`${API_BASE}/api/signup`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                await refreshUser();
+                navigate("/");
+            } else {
+                const errorData = await response.json();
+                setError(errorData.detail || "Signup failed");
+            }
+        } catch (err) {
+            setError("Network error. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
     }
 
     return (
-        <main>
-            <h1>Sign Up</h1>
-            {/* Form uses React 19's action pattern for submission. */}
-            <form action={handleSignup}>
-                <label>
-                    Username:
-                    <input name="username" required />
-                </label>
-                <br />
-                <label>
-                    Password:
-                    <input name="password" type="password" required />
-                </label>
-                <br />
-                <label>
-                    Confirm Password:
-                    <input name="password2" type="password" required />
-                </label>
-                <br />
-                <button type="submit">Sign Up</button>
-            </form>
-            {/* Show error message if signup fails. */}
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            {/* Add navigation links for users who need to login or forgot their password. */}
-            Already have an account? <Link to="/login">Login here</Link>
+        <main className="login-container">
+            <div className="sign-up-logo">
+                <h1 className="logo-title">Kitsukeep.</h1>
+            </div>
+            <div className="login-card">
+                <h1 className="login-title">Sign Up</h1>
+
+                <form action={handleSignup} className="login-form">
+                    <div className="form-group">
+                        <label htmlFor="username" className="form-label">
+                            Username
+                        </label>
+                        <input
+                            id="username"
+                            name="username"
+                            type="text"
+                            className="form-input"
+                            required
+                            disabled={isLoading}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="password" className="form-label">
+                            Password
+                        </label>
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            className="form-input"
+                            required
+                            disabled={isLoading}
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="login-button"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? "Signing up..." : "Sign Up"}
+                    </button>
+                </form>
+
+                {error && (
+                    <div className="error-message" role="alert">
+                        {error}
+                    </div>
+                )}
+
+                <div className="login-footer">
+                    <p>
+                        Already have an account?{" "}
+                        <Link to="/Login" className="signup-link">
+                            Log in here
+                        </Link>
+                    </p>
+                </div>
+            </div>
         </main>
     );
 }
