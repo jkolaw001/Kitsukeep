@@ -1,5 +1,4 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from fastapi import HTTPException, Request
 from datetime import datetime, timedelta
@@ -9,11 +8,9 @@ import requests
 
 # from authenticate import get_auth_user
 from schemas import (
-    WatchlistCreate,
     WatchlistOut,
     NoteCreate,
     NoteOut,
-    UserCreate,
     UserOut,
     PlaylistCreate,
     PlaylistOut,
@@ -324,8 +321,12 @@ def get_all_users() -> list[UserOut]:
     return user_list
 
 
-def delete_user(user_id: int):
+def delete_user(request: Request):
     db = sessionLocal()
+    username = request.session.get("username")
+    user_id = db.query(DBUser.id).filter(DBUser.username == username).scalar()
+    if user_id is None:
+        raise HTTPException(status_code=404, detail="User not found")
     user_model = db.query(DBUser).filter(DBUser.id == user_id).first()
     db.delete(user_model)
     db.commit()
@@ -333,8 +334,12 @@ def delete_user(user_id: int):
     return {"detail": f"{user_id} has been deleted OwO"}
 
 
-def delete_note(anime_id: int, note_id: int):
+def delete_note(anime_id: int, note_id: int, request: Request):
     db = sessionLocal()
+    username = request.session.get("username")
+    user_id = db.query(DBUser.id).filter(DBUser.username == username).scalar()
+    if user_id is None:
+        raise HTTPException(status_code=404, detail="User not found")
     note_model = (
         db.query(DBNotes)
         .filter(DBNotes.id == note_id, DBNotes.anime_id == anime_id)
@@ -346,8 +351,12 @@ def delete_note(anime_id: int, note_id: int):
     return {"detail": f"{note_id} has been deleted OwO"}
 
 
-def delete_anime_from_watchlist(anime_id: int, user_id: int):
+def delete_anime_from_watchlist(anime_id: int, request: Request):
     db = sessionLocal()
+    username = request.session.get("username")
+    user_id = db.query(DBUser.id).filter(DBUser.username == username).scalar()
+    if user_id is None:
+        raise HTTPException(status_code=404, detail="User not found")
     anime_model = (
         db.query(DBWatchlist)
         .filter(DBWatchlist.anime_id == anime_id, DBWatchlist.user_id == user_id)
