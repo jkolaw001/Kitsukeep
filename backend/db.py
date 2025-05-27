@@ -32,11 +32,17 @@ engine = create_engine(DATABASE_URL)
 sessionLocal = sessionmaker(bind=engine)
 
 
-def get_all_watchlists() -> list[WatchlistWithAnimeOut]:
+def get_all_watchlists(request: Request) -> list[WatchlistWithAnimeOut]:
     db = sessionLocal()
+
+    username = request.session.get("username")
+    user_id = db.query(DBUser.id).filter(DBUser.username == username).scalar()
+    if user_id is None:
+        raise HTTPException(status_code=404, detail="User not found")
 
     watchlists = (
         db.query(DBWatchlist, DBAnime)
+        .filter(DBWatchlist.user_id == user_id)
         .join(DBAnime, DBWatchlist.anime_id == DBAnime.id)
         .all()
     )
