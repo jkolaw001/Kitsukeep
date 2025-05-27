@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Home.css";
 import { Link } from "react-router-dom";
 import WatchlistPage from "./Watchlist.jsx";
@@ -9,6 +9,9 @@ import AnimeCarousel from "./carousel.jsx";
 
 function HomePage() {
   const [ isUserDropdownOpen, setIsUserDropdownOpen ] = useState(false);
+  const [ anime, setAnime] = useState([])
+  const [loading, setLoading] = useState(true);
+  const [ error, setError] = useState(null);
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
@@ -17,6 +20,43 @@ function HomePage() {
   const handleUserDropdownItemClick = () => {
     setIsUserDropdownOpen(false)
   };
+
+  useEffect(() => {
+    const fetchAnimes = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('http://127.0.0.1:8000/api/anime', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setAnimes(data);
+      } catch (err) {
+        setError(err.message);
+        console.error('Error fetching animes:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnimes();
+  }, []);
+
+  const truncateDescription = (description, maxLength = 100) => {
+    if (!description) return "No description available";
+    return description.length > maxLength
+      ? description.substring(0, maxLength) + "..."
+      : description;
+  };
+
 
   return (
     <>
@@ -74,67 +114,52 @@ function HomePage() {
       </div>
 
 
-      <div className="anime-cards">
-        <div className="card">
-          <h3 className="card-title">Anime 1</h3>
-          <p className="card-description">Anime name and a few info</p>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Anime 2</h3>
-          <p className="card-description">Anime name and a few info</p>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Anime 3</h3>
-          <p className="card-description">Anime name and a few info</p>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Anime 4</h3>
-          <p className="card-description">Anime name and a few info</p>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Anime 5</h3>
-          <p className="card-description">Anime name and a few info</p>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Anime 6</h3>
-          <p className="card-description">Anime name and a few info</p>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Anime 7</h3>
-          <p className="card-description">Anime name and a few info</p>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Anime 8</h3>
-          <p className="card-description">Anime name and a few info</p>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Anime 9</h3>
-          <p className="card-description">Anime name and a few info</p>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Anime 10</h3>
-          <p className="card-description">Anime name and a few info</p>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Anime 11</h3>
-          <p className="card-description">Anime name and a few info</p>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Anime 12</h3>
-          <p className="card-description">Anime name and a few info</p>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Anime 13</h3>
-          <p className="card-description">Anime name and a few info</p>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Anime 14</h3>
-          <p className="card-description">Anime name and a few info</p>
-        </div>
-        <div className="card">
-          <h3 className="card-title">Anime 1</h3>
-          <p className="card-description">Anime name and a few info</p>
-        </div>
+       <div className="anime-cards">
+        {loading && (
+          <div className="loading-message">
+            <p>Loading anime...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="error-message">
+            <p>Error loading anime: {error}</p>
+          </div>
+        )}
+
+        {!loading && !error && animes.length === 0 && (
+          <div className="no-anime-message">
+            <p>No anime found. Add some anime to your database!</p>
+          </div>
+        )}
+
+        {!loading && !error && animes.map((anime) => (
+          <div key={anime.id} className="card">
+            {anime.img_url && (
+              <div className="card-image">
+                <img
+                  src={anime.img_url}
+                  alt={anime.title}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
+            <div className="card-content">
+              <h3 className="card-title">{anime.title}</h3>
+              <p className="card-description">
+                {truncateDescription(anime.description)}
+              </p>
+              {anime.genre && (
+                <p className="card-genre">Genre: {anime.genre}</p>
+              )}
+              {anime.rating && (
+                <p className="card-rating">Rating: {anime.rating}</p>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
     </>
   );

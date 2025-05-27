@@ -8,31 +8,31 @@ function AnimeCarousel() {
 
   const animeSlides = [
     {
-      id: "id here",
+      id: 1,
       title: "title here",
       image: placeholderImg,
       rating: "rating-here",
     },
     {
-      id: "id here",
+      id: 2,
       title: "title here",
       image: placeholderImg,
       rating: "rating-here",
     },
     {
-      id: "id here",
+      id: 3,
       title: "title here",
       image: placeholderImg,
       rating: "rating-here",
     },
     {
-      id: "id here",
+      id: 4,
       title: "title here",
       image: placeholderImg,
       rating: "rating-here",
     },
     {
-      id: "id here",
+      id: 5,
       title: "title here",
       image: placeholderImg,
       rating: "rating-here",
