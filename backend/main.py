@@ -45,7 +45,7 @@ app = FastAPI()
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key="some-random-string",
+    secret_key="YSI_ADOFHBcdYTUn7T_MMbtuOCxebsIVgJ9Ji_nppkk",
     session_cookie="session",
     max_age=60 * 60 * 2,  # 2 hours in seconds
 )
@@ -95,10 +95,10 @@ async def get_anime_by_id(anime_id: int) -> AnimeOut | None:
 
 @app.get(
     "/api/watchlists",
-    response_model=list[WatchlistWithAnimeOut],
+    response_model=list[WatchlistOut],
     dependencies=[Depends(get_auth_user)],
 )
-async def get_watchlist(request: Request) -> list[WatchlistWithAnimeOut] | None:
+async def get_watchlist(request: Request) -> list[WatchlistOut] | None:
     watchlists = get_all_watchlists(request)
     if not watchlists:
         raise HTTPException(status_code=404, detail="Watchlist not found")
@@ -126,7 +126,9 @@ async def add_note(anime_id: int, note: NoteCreate) -> NoteOut:
     response_model=WatchlistOut,
     dependencies=[Depends(get_auth_user)],
 )
-async def add_watchlist(watchlist: AnimeCreate, request: Request) -> WatchlistOut:
+async def add_watchlist(
+    watchlist: AnimeCreate, request: Request
+) -> WatchlistOut | None:
     new_watchlist = create_watchlist_entry(watchlist, request)
     if not new_watchlist:
         raise HTTPException(status_code=400, detail="Watchlist already exists")

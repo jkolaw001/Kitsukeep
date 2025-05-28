@@ -88,6 +88,20 @@ export default function Signup() {
                         />
                     </div>
 
+                    <div className="form-group">
+                        <label htmlFor="password" className="form-label">
+                            Confirm Password
+                        </label>
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            className="form-input"
+                            required
+                            disabled={isLoading}
+                        />
+                    </div>
+
                     <button
                         type="submit"
                         className="login-button"
