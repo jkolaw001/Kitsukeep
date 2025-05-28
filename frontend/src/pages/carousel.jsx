@@ -1,45 +1,61 @@
 import { useState, useEffect } from "react";
-import "./Carousel.css"
-import placeholderImg from "../assets/placeholder.jpg"
+import "./Carousel.css";
+import placeholderImg from "../assets/placeholder.jpg";
 
 function AnimeCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIisAutoPlaying] = useState(true);
+  const [anime, setAnime] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const animeSlides = [
-    {
-      id: "id here",
-      title: "title here",
-      image: placeholderImg,
-      rating: "rating-here",
-    },
-    {
-      id: "id here",
-      title: "title here",
-      image: placeholderImg,
-      rating: "rating-here",
-    },
-    {
-      id: "id here",
-      title: "title here",
-      image: placeholderImg,
-      rating: "rating-here",
-    },
-    {
-      id: "id here",
-      title: "title here",
-      image: placeholderImg,
-      rating: "rating-here",
-    },
-    {
-      id: "id here",
-      title: "title here",
-      image: placeholderImg,
-      rating: "rating-here",
-    },
-  ];
+  const toggleUserDropdown = () => {
+    setIsUserDropdownOpen(!isUserDropdownOpen);
+  };
 
- useEffect(() => {
+  const handleUserDropdownItemClick = () => {
+    setIsUserDropdownOpen(false);
+  };
+
+  useEffect(() => {
+    const fetchAnimes = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("http://127.0.0.1:8000/api/anime", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setAnime(data);
+      } catch (err) {
+        setError(err.message);
+        console.error("Error fetching animes:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnimes();
+  }, []);
+
+  const animeSlides = anime.slice(0, 5).map((a) => ({
+    id: a.id,
+    title: a.title,
+    image: a.img_url,
+    rating: a.rating,
+    episodes: a.episodes,
+    description: a.description,
+  }));
+
+  useEffect(() => {
     if (!isAutoPlaying) return;
 
     const interval = setInterval(() => {
@@ -87,16 +103,20 @@ function AnimeCarousel() {
                   alt={anime.title}
                   className="slide-image"
                 />
-                <div className="slide-overlay"></div>
+                <div className="slide-overlay">
+                  <div className="overlay-image">
+                    <img
+                    src={anime.image}/>
+                  </div>
+                </div>
               </div>
               <div className="slide-content">
                 <div className="slide-info">
                   <h1 className="slide-title">{anime.title}</h1>
                   <div className="slide-meta">
                     <span className="rating">⭐ {anime.rating}</span>
-                    <span className="episodes">{anime.episodes} something here</span>
+
                   </div>
-                  <p className="slide-description">{anime.description}</p>
                   <div className="slide-buttons">
                     <button className="play-button">▶️ Watch Trailer</button>
                     <button className="info-button">ℹ️ More Info</button>
@@ -122,7 +142,9 @@ function AnimeCarousel() {
           {animeSlides.map((_, index) => (
             <button
               key={index}
-              className={`carousel-dot ${index === currentSlide ? "active" : ""}`}
+              className={`carousel-dot ${
+                index === currentSlide ? "active" : ""
+              }`}
               onClick={() => gotoSlide(index)}
             />
           ))}

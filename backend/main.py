@@ -50,7 +50,7 @@ app.add_middleware(
     max_age=60 * 60 * 2,  # 2 hours in seconds
 )
 
-origins = ["http://localhost:5173"]
+origins = ["http://127.0.0.1:5173", "http://localhost:5173"]
 
 app.add_middleware(
     middleware_class=CORSMiddleware,
