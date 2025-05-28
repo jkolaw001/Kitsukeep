@@ -38,7 +38,7 @@ function HomePage() {
         }
 
         const data = await response.json();
-        setAnimes(data);
+        setAnime(data);
       } catch (err) {
         setError(err.message);
         console.error('Error fetching animes:', err);
@@ -49,13 +49,6 @@ function HomePage() {
 
     fetchAnimes();
   }, []);
-
-  const truncateDescription = (description, maxLength = 100) => {
-    if (!description) return "No description available";
-    return description.length > maxLength
-      ? description.substring(0, maxLength) + "..."
-      : description;
-  };
 
 
   return (
@@ -127,13 +120,13 @@ function HomePage() {
           </div>
         )}
 
-        {!loading && !error && animes.length === 0 && (
+        {!loading && !error && anime.length === 0 && (
           <div className="no-anime-message">
             <p>No anime found. Add some anime to your database!</p>
           </div>
         )}
 
-        {!loading && !error && animes.map((anime) => (
+        {!loading && !error && anime.map((anime) => (
           <div key={anime.id} className="card">
             {anime.img_url && (
               <div className="card-image">
@@ -148,15 +141,7 @@ function HomePage() {
             )}
             <div className="card-content">
               <h3 className="card-title">{anime.title}</h3>
-              <p className="card-description">
-                {truncateDescription(anime.description)}
-              </p>
-              {anime.genre && (
-                <p className="card-genre">Genre: {anime.genre}</p>
-              )}
-              {anime.rating && (
-                <p className="card-rating">Rating: {anime.rating}</p>
-              )}
+
             </div>
           </div>
         ))}
