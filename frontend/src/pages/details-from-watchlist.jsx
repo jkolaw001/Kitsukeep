@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { getAnime } from "../api";
 import { deleteAnimeFromWatchlist } from "../api";
+import { createNote } from "../api";\
+import AddNote from "./AddNote";
 
 export default function AnimeDetailFromHomePage(){
 
@@ -37,11 +39,10 @@ export default function AnimeDetailFromHomePage(){
                 <p>{anime.rating}</p>
                 <p>{anime.description}</p>
                 <a href={anime.trailer}>Watch Trailer</a>
-                <button onClick={createWatchlist(anime)}>Add To WatchList</button>
+                <AddNote />
             </section>
             <section>
                 <button onClick={deleteAnimeFromWatchlist(id)}>Remove From Watchlist</button>
-                
             </section>
         </>
     )
