@@ -30,7 +30,7 @@ export async function createNote(new_note, anime_id) {
 // get_all_watchlists - /api/watchlists
 export async function getAllWatchlists() {
     try {
-        const response = await fetch (`${baseURL}/api/watchlist`,
+        const response = await fetch (`${baseURL}/api/watchlists`,
             {credentials: "include"}
         );
         if (!response.ok) {

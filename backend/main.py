@@ -98,11 +98,8 @@ async def get_anime_by_id(anime_id: int) -> AnimeOut | None:
     response_model=list[WatchlistOut],
     dependencies=[Depends(get_auth_user)],
 )
-async def get_watchlist(request: Request) -> list[WatchlistOut] | None:
-    watchlists = get_all_watchlists(request)
-    if not watchlists:
-        raise HTTPException(status_code=404, detail="Watchlist not found")
-    return watchlists
+async def get_watchlists(request: Request):
+    return get_all_watchlists(request)
 
 
 @app.get("/api/anime/{anime_id}/notes")
@@ -126,13 +123,8 @@ async def add_note(anime_id: int, note: NoteCreate) -> NoteOut:
     response_model=WatchlistOut,
     dependencies=[Depends(get_auth_user)],
 )
-async def add_watchlist(
-    watchlist: AnimeCreate, request: Request
-) -> WatchlistOut | None:
-    new_watchlist = create_watchlist_entry(watchlist, request)
-    if not new_watchlist:
-        raise HTTPException(status_code=400, detail="Watchlist already exists")
-    return new_watchlist
+async def add_watchlist(anime: AnimeCreate, request: Request):
+    return create_watchlist_entry(anime, request)
 
 
 @app.delete(
