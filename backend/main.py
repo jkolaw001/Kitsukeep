@@ -50,7 +50,7 @@ app.add_middleware(
     max_age=60 * 60 * 2,  # 2 hours in seconds
 )
 
-origins = ["http://127.0.0.1:5173"]
+origins = ["http://127.0.0.1:5173", "http://localhost:5173"]
 
 app.add_middleware(
     middleware_class=CORSMiddleware,
@@ -93,9 +93,11 @@ async def get_anime_by_id(anime_id: int) -> AnimeOut | None:
     return anime
 
 
-@app.get("/api/watchlists",
-         response_model=WatchlistWithAnimeOut,
-         dependencies=[Depends(get_auth_user)])
+@app.get(
+    "/api/watchlists",
+    response_model=WatchlistWithAnimeOut,
+    dependencies=[Depends(get_auth_user)],
+)
 async def get_watchlist(request: Request) -> list[WatchlistWithAnimeOut] | None:
     watchlists = get_all_watchlists(request)
     if not watchlists:
