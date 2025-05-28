@@ -95,7 +95,7 @@ async def get_anime_by_id(anime_id: int) -> AnimeOut | None:
 
 @app.get(
     "/api/watchlists",
-    response_model=WatchlistWithAnimeOut,
+    response_model=list[WatchlistWithAnimeOut],
     dependencies=[Depends(get_auth_user)],
 )
 async def get_watchlist(request: Request) -> list[WatchlistWithAnimeOut] | None:
