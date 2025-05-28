@@ -15,7 +15,7 @@ const API_BASE = "http://localhost:8000";
 
 /** @type {import('react').Context<UserContextType>} */
 const UserContext = createContext(
-    /** @type {UserContextType} */ ({ user: null, refreshUser: async () => {} })
+    /** @type {UserContextType} */({ user: null, refreshUser: async () => { } })
 );
 
 /**

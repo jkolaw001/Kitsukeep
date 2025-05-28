@@ -24,7 +24,7 @@ function WatchlistPage() {
     }, [])
 
     if (error) {
-        return <h1>{error.message}</h1>
+        return <h1>{error.message} Hi</h1>
     }
     const animeCards = anime.map((anime) => {
         return <AnimeCard key={anime.id} anime={anime} />
