@@ -1,11 +1,13 @@
 import { useState,useEffect } from "react";
 import '.Details/.css'
+import Header from "./src/pages/Header";
 //import {Link} from "react-router-dom"
 
 export default function AnimeDetails({}) {
 
     return (
        <>
+       <Header />
        <img className="detail-image" src="https://placehold.co/125x200" />
       <h2>"anime.title"</h2>
       <p>"anime.year"</p>
