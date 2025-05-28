@@ -19,7 +19,6 @@ function WatchlistPage() {
                 return
             }
             setAnime(anime)
-            console.log(anime)
         }
         fetchAnime()
     }, [])

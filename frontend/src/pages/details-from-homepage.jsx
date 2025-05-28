@@ -10,8 +10,9 @@ export default function AnimeDetailFromHomePage(){
     const { id } = useParams()
 
     useEffect(() => {
-        async function fetchAnime(id){
+        async function fetchAnime(){
             const anime = await getAnime(id)
+            console.log(anime)
             if (anime instanceof Error) {
                 setError(anime.message)
                 return

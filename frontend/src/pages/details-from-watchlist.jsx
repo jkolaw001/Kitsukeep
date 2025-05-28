@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { getAnime } from "../api";
+import { Link } from "react-router";
 import { deleteAnimeFromWatchlist } from "../api";
-import { createNote } from "../api";\
+import { createNote } from "../api";
+import NoteList from "./note-list";
 import AddNote from "./AddNote";
 
-export default function AnimeDetailFromHomePage(){
+export default function AnimeDetailFromWatchlist() {
 
     const [anime, setAnime] = useState(null)
     const [error, setError] = useState(null)
     const { id } = useParams()
-
     useEffect(() => {
-        async function fetchAnime(id){
-            const anime = await getAnime(id)
+        async function fetchAnime() {
+            const anime = await getAnime(Number(id))
             if (anime instanceof Error) {
                 setError(anime.message)
                 return
@@ -39,10 +40,15 @@ export default function AnimeDetailFromHomePage(){
                 <p>{anime.rating}</p>
                 <p>{anime.description}</p>
                 <a href={anime.trailer}>Watch Trailer</a>
+                <NoteList />
                 <AddNote />
             </section>
             <section>
-                <button onClick={deleteAnimeFromWatchlist(id)}>Remove From Watchlist</button>
+                <Link to="/Watchlist">
+                    <button onClick={() => {
+                        deleteAnimeFromWatchlist(id)
+                    }}>Remove From Watchlist</button>
+                </Link>
             </section>
         </>
     )
