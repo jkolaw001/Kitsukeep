@@ -6,12 +6,14 @@ import Login from "../loginpages/Login.jsx";
 import Logout from "../loginpages/Logout.jsx";
 import Signup from "../loginpages/Signup.jsx";
 import AnimeCarousel from "./carousel.jsx";
+import { useUser } from "../loginpages/UserProvider.jsx";
 
 function HomePage() {
   const [ isUserDropdownOpen, setIsUserDropdownOpen ] = useState(false);
   const [ anime, setAnime] = useState([])
   const [loading, setLoading] = useState(true);
   const [ error, setError] = useState(null);
+  const { user } = useUser();
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
@@ -78,7 +80,7 @@ function HomePage() {
             <div className="user-dropdown-container">
               <button className="user-menu" onClick={toggleUserDropdown}>
                 <span className="icon">👤</span>
-                USER
+                {user ? user.username : "USER"}
                 <span className="icon">▼</span>
               </button>
 
@@ -87,8 +89,8 @@ function HomePage() {
                   <Link to='/Logout' className="dropdown-item" onClick={handleUserDropdownItemClick}>
                     Logout
                   </Link>
-                  <Link to='/Signup' className="dropdown-item" onClick={handleUserDropdownItemClick}>Something Here</Link>
-                  <Link to='/Login' className="dropdown-item" onClick={handleUserDropdownItemClick}>Something Here</Link>
+                  <Link to='/Signup' className="dropdown-item" onClick={handleUserDropdownItemClick}>Signup</Link>
+                  <Link to='/Login' className="dropdown-item" onClick={handleUserDropdownItemClick}>Login</Link>
 
                 </div>
               )}

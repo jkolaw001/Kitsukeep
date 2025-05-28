@@ -32,7 +32,7 @@ engine = create_engine(DATABASE_URL)
 sessionLocal = sessionmaker(bind=engine)
 
 
-def get_all_watchlists(request: Request) -> list[WatchlistWithAnimeOut]:
+def get_all_watchlists(request: Request) -> list[WatchlistOut]:
     db = sessionLocal()
 
     username = request.session.get("username")
