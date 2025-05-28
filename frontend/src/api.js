@@ -7,6 +7,7 @@ const baseURL = "http://localhost:8000";
 export async function createNote(new_note, anime_id) {
     try {
         const response = await fetch (`${baseURL}/api/anime/${anime_id}/notes`, {
+            credentials:"include",
             method: "POST",
             headers: {
                 "Content-Type" : "application/json",
@@ -29,7 +30,9 @@ export async function createNote(new_note, anime_id) {
 // get_all_watchlists - /api/watchlists
 export async function getAllWatchlists() {
     try {
-        const response = await fetch (`${baseURL}/api/watchlists`);
+        const response = await fetch (`${baseURL}/api/watchlists`,
+            {credentials: "include"}
+        );
         if (!response.ok) {
             throw new Error(`${response.status}`);
         }
@@ -47,6 +50,7 @@ export async function getAllWatchlists() {
 export async function createWatchlist(new_watchlist) {
     try {
         const response = await fetch (`${baseURL}/api/watchlists`, {
+            credentials: "include",
             method: "POST",
             headers: {
                 "Content-Type" : "application/json",
@@ -120,7 +124,12 @@ export async function getAllAnimeNotes(anime_id) {
 // delete_anime_from_watchlist - /api/watchlists/{anime_id}
 export async function deleteAnimeFromWatchlist(anime_id) {
     try {
-        const response = await fetch (`${baseURL}/api/watchlists/${anime_id}`);
+        const response = await fetch (`${baseURL}/api/watchlists/${anime_id}`, {
+            credentials: "include",
+            method: "DELETE"
+        }
+
+        );
         if (!response.ok) {
             throw new Error(`${response.status}`);
         }
@@ -137,7 +146,10 @@ export async function deleteAnimeFromWatchlist(anime_id) {
 // delete_note - /api/anime/{anime_id}/notes/{notes_id}
 export async function deleteNote(anime_id, notes_id) {
     try {
-        const response = await fetch (`${baseURL}/api/anime/${anime_id}/notes/${notes_id}`);
+        const response = await fetch (`${baseURL}/api/anime/${anime_id}/notes/${notes_id}`, {
+            credentials: "include",
+            method: "DELETE"
+        });
         if (!response.ok) {
             throw new Error(`${response.status}`);
         }

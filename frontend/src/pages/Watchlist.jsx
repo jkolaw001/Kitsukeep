@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "./Watchlist.css";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import {getAllWatchlists} from "../api.js"
+import { getAllWatchlists } from "../api.js"
 import AnimeCard from "./Watchlist-card";
 
 function WatchlistPage() {
@@ -19,8 +19,8 @@ function WatchlistPage() {
                 return
             }
             setAnime(anime)
-    }
-    fetchAnime()
+        }
+        fetchAnime()
     }, [])
 
     if (error) {
