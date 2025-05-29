@@ -27,6 +27,8 @@ export default function AnimeDetailFromHomePage(){
         fetchAnime()
     }, [])
 
+
+
     function getYouTubeVideoId(url) {
         const regex = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/;
         const match = url.match(regex);
