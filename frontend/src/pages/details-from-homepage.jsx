@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { getAnime } from "../api";
 import { createWatchlist } from "../api";
+
 
 export default function AnimeDetailFromHomePage(){
 
     const [anime, setAnime] = useState(null)
     const [error, setError] = useState(null)
     const { id } = useParams()
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchAnime(){
@@ -39,7 +41,7 @@ export default function AnimeDetailFromHomePage(){
                 <p>{anime.description}</p>
             </section>
             <a href={anime.trailer}>Watch Trailer</a>
-            <button onClick={() => createWatchlist(anime)}>Add To WatchList</button>
+            <button onClick={async () => {await createWatchlist(anime); navigate("/watchlist")}}>Add To WatchList</button>
         </>
     )
 
