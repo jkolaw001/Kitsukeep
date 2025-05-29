@@ -31,7 +31,6 @@ class AnimeBase(BaseModel):
 
 class NoteBase(BaseModel):
     note: str
-    user_id: int
 
 
 class WatchlistBase(BaseModel):

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import "./Carousel.css";
 import placeholderImg from "../assets/placeholder.jpg";
+import { useTranslation } from "react-i18next";
+
 
 function AnimeCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -8,6 +10,7 @@ function AnimeCarousel() {
   const [anime, setAnime] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
@@ -114,12 +117,12 @@ function AnimeCarousel() {
                 <div className="slide-info">
                   <h1 className="slide-title">{anime.title}</h1>
                   <div className="slide-meta">
-                    <span className="rating">⭐ {anime.rating}</span>
+                    <span className="rating">⭐{t('carousel.rating')}: {anime.rating}</span>
 
                   </div>
                   <div className="slide-buttons">
-                    <button className="play-button">▶️ Watch Trailer</button>
-                    <button className="info-button">ℹ️ More Info</button>
+                    <button className="play-button">▶️{t('carousel.watchTrailer')}</button>
+                    <button className="info-button">ℹ️{t('carousel.moreInfo')}</button>
                   </div>
                 </div>
               </div>

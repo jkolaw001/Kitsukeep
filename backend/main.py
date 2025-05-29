@@ -113,8 +113,8 @@ async def get_notes_by_anime_id(anime_id: int) -> list[NoteWithAnimeOut] | None:
     response_model=NoteOut,
     dependencies=[Depends(get_auth_user)],
 )
-async def add_note(anime_id: int, note: NoteCreate) -> NoteOut:
-    new_note = create_note(note, anime_id)
+async def add_note(anime_id: int, note: NoteCreate, request: Request) -> NoteOut:
+    new_note = create_note(note, anime_id, request)
     return new_note
 
 

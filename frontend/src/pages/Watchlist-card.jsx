@@ -3,7 +3,7 @@ import './Watchlist.css'
 
 export default function AnimeCard({anime}) {
     return (
-        <Link className='card' to={`/anime/${anime.id}`}>
+        <Link className='card' to={`/anime/Watchlist/${anime.anime_id}`}>
             <img src={anime.img_url} alt={anime.title} />
         </Link>
     )

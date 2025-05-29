@@ -1,6 +1,3 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import HomePage from "./pages/Home.jsx";
 import { Routes, Route } from "react-router-dom";
@@ -9,9 +6,10 @@ import Login from "./loginpages/Login.jsx";
 import Logout from "./loginpages/Logout.jsx";
 import Signup from "./loginpages/Signup.jsx";
 import ProtectedRoute from "../src/loginpages/ProtectedRoute.jsx";
+import AnimeDetailFromHomePage from "./pages/details-from-homepage.jsx";
+import AnimeDetailFromWatchlist from "./pages/details-from-watchlist.jsx";
 
 function App() {
-  const [count, setCount] = useState(0);
 
   return (
     <Routes>
@@ -32,6 +30,8 @@ function App() {
       <Route path="/Login" element={<Login />} />
       <Route path="/Logout" element={<Logout />} />
       <Route path="/Signup" element={<Signup />} />
+      <Route path="/anime/:id" element={<AnimeDetailFromHomePage />} />
+      <Route path="/anime/Watchlist/:id" element={<AnimeDetailFromWatchlist />} />
     </Routes>
   );
 }
