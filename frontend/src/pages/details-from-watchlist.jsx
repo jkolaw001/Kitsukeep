@@ -12,6 +12,8 @@ export default function AnimeDetailFromWatchlist() {
     const [anime, setAnime] = useState(null)
     const [error, setError] = useState(null)
     const { id } = useParams()
+
+
     useEffect(() => {
         async function fetchAnime() {
             const anime = await getAnime(Number(id))
@@ -40,8 +42,7 @@ export default function AnimeDetailFromWatchlist() {
                 <p>{anime.rating}</p>
                 <p>{anime.description}</p>
                 <a href={anime.trailer}>Watch Trailer</a>
-                <NoteList />
-                <AddNote />
+                <NoteList id={id} />
             </section>
             <section>
                 <Link to="/Watchlist">

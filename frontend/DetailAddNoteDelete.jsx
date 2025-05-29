@@ -41,7 +41,7 @@ export default function AnimeDetailsInWatchlist({}) {
           placeholder="Enter text here..."
         ></textarea>
         <p></p>
-        <button type="submit" className="watchlist-button">
+        <button onClose={() => setIsModalOpen(false)} type="submit" className="watchlist-button">
           Add Note
         </button>
       </Modal>
