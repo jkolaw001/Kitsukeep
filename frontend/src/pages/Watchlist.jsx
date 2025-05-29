@@ -36,6 +36,7 @@ function WatchlistPage() {
     return (
         <>
             <div className="nav-container" id="navContainer">
+                <title>Kitsukeep | Watchlist</title>
                 <div className="header">
                     <div className="left-section">
                         <Link to='/' className="main-logo">

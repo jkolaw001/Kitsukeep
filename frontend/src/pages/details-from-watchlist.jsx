@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { getAnime } from "../api";
 import { deleteAnimeFromWatchlist } from "../api";
-import { createNote } from "../api";\
+import { createNote } from "../api";
 import AddNote from "./AddNote";
 
 export default function AnimeDetailFromHomePage(){
