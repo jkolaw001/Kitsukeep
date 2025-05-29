@@ -122,13 +122,14 @@ def create_watchlist_entry(anime: AnimeCreate, request: Request) -> WatchlistOut
     return result
 
 
-def create_note(
-    note: NoteCreate,
-    anime_id: int,
-) -> NoteOut:
+def create_note(note: NoteCreate, anime_id: int, request: Request) -> NoteOut:
 
     db = sessionLocal()
-    note_model = DBNotes(user_id=note.user_id, anime_id=anime_id, note=note.note)
+    username = request.session.get("username")
+    user_id = db.query(DBUser.id).filter(DBUser.username == username).scalar()
+    if user_id is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    note_model = DBNotes(user_id=user_id, anime_id=anime_id, note=note.note)
 
     db.add(note_model)
     db.commit()
@@ -137,7 +138,6 @@ def create_note(
     result = NoteOut(
         note_id=note_model.id,
         note=note_model.note,
-        user_id=note_model.user_id,
         anime_id=note_model.anime_id,
     )
     db.close()
