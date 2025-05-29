@@ -122,7 +122,6 @@ def create_watchlist_entry(anime: AnimeCreate, request: Request) -> WatchlistOut
     return result
 
 
-# ERASE THIS COMMENT
 def create_note(note: NoteCreate, anime_id: int, request: Request) -> NoteOut:
 
     db = sessionLocal()
