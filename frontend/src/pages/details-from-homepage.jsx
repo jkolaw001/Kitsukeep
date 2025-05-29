@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { getAnime } from "../api";
 import { createWatchlist } from "../api";
+import YouTube from "react-youtube";
 
 
 export default function AnimeDetailFromHomePage(){
@@ -24,6 +25,12 @@ export default function AnimeDetailFromHomePage(){
         fetchAnime()
     }, [])
 
+    function getYouTubeVideoId(url) {
+        const regex = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/;
+        const match = url.match(regex);
+        return match ? match[1] : null;
+    }
+
     if (error) {
         return <h1>{error.message}</h1>
     }
@@ -40,7 +47,20 @@ export default function AnimeDetailFromHomePage(){
                 <p>{anime.rating}</p>
                 <p>{anime.description}</p>
             </section>
-            <a href={anime.trailer}>Watch Trailer</a>
+             {anime.trailer ? (
+                    <YouTube
+                        videoId={getYouTubeVideoId(anime.trailer)}
+                        opts={{
+                            height: "360",
+                            width: "640",
+                            playerVars: {
+                                autoplay: 0,
+                            },
+                        }}
+                    />
+                ) : (
+                    <h3><b>NO TRAILER AVAILABLE</b></h3>
+                )}
             <button onClick={async () => {await createWatchlist(anime); navigate("/watchlist")}}>Add To WatchList</button>
         </>
     )
