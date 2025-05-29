@@ -30,7 +30,7 @@ function App() {
       <Route path="/Login" element={<Login />} />
       <Route path="/Logout" element={<Logout />} />
       <Route path="/Signup" element={<Signup />} />
-      <Route path="/anime/Home/:id" element={<AnimeDetailFromHomePage />} />
+      <Route path="/anime/:id" element={<AnimeDetailFromHomePage />} />
       <Route path="/anime/Watchlist/:id" element={<AnimeDetailFromWatchlist />} />
     </Routes>
   );

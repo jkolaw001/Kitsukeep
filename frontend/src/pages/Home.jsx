@@ -8,6 +8,7 @@ import Signup from "../loginpages/Signup.jsx";
 import AnimeCarousel from "./carousel.jsx";
 import { useUser } from "../loginpages/UserProvider.jsx";
 import Header from "./Header.jsx";
+import AnimeDetailFromHomePage from "./details-from-homepage.jsx";
 
 function HomePage() {
   const [ isUserDropdownOpen, setIsUserDropdownOpen ] = useState(false);
@@ -83,7 +84,8 @@ function HomePage() {
         )}
 
         {!loading && !error && anime.map((anime) => (
-          <div key={anime.id} className="card">
+        <Link to={`/anime/${anime.id}`} key={anime.id} className="card-link">
+          <div className="card">
             {anime.img_url && (
               <div className="card-image">
                 <img
@@ -97,10 +99,10 @@ function HomePage() {
             )}
             <div className="card-content">
               <h3 className="card-title">{anime.title}</h3>
-
             </div>
           </div>
-        ))}
+        </Link>
+      ))}
       </div>
     </>
   );
