@@ -39,7 +39,7 @@ export default function AnimeDetailFromHomePage(){
                 <p>{anime.description}</p>
             </section>
             <a href={anime.trailer}>Watch Trailer</a>
-            <button onClick={createWatchlist(anime)}>Add To WatchList</button>
+            <button onClick={() => createWatchlist(anime)}>Add To WatchList</button>
         </>
     )
 
