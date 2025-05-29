@@ -4,6 +4,8 @@ import { getAnime } from "../api";
 import { createWatchlist } from "../api";
 import Header from "./Header";
 import './Details.css'
+import YouTube from "react-youtube";
+
 
 export default function AnimeDetailFromHomePage(){
 
@@ -24,6 +26,12 @@ export default function AnimeDetailFromHomePage(){
         }
         fetchAnime()
     }, [])
+
+    function getYouTubeVideoId(url) {
+        const regex = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/;
+        const match = url.match(regex);
+        return match ? match[1] : null;
+    }
 
     if (error) {
         return <h1>{error.message}</h1>

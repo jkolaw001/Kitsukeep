@@ -63,7 +63,7 @@ export default function AnimeDetailFromWatchlist() {
                         }}
                     />
                 ) : (
-                    <p>No trailer available</p>
+                    <h3><b>NO TRAILER AVAILABLE</b></h3>
                 )}
                 {/* <NoteList id={id} /> */}
             </section>
