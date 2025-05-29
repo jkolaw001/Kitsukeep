@@ -159,16 +159,38 @@ body {
   display: inline-block;
 }
 
+.language-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
 .dropdown-menu {
   position: absolute;
   top: 100%;
   right: 0;
   left: 0;
-  background-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.5);
   min-width: 40px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   overflow: hidden;
+  border-radius: 8px;
+    white-space: nowrap;
+
+
+}
+
+.language-dropdown {
+  left: 0 !important;
+  right: 0 !important;
+  min-width: 160px;
+  width: max-content;
+  top: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  padding: 0.5rem 0;
 }
 
 .dropdown-item {
@@ -184,9 +206,6 @@ body {
   transition: transform 0.3s ease;
 }
 
-.dropdown-arrow.rotated {
-  transform: rotate(180deg);
-}
 
 .dropdown-menu {
   animation: dropdownFadeIn 0.2s ease-out;
@@ -352,4 +371,61 @@ body {
 
 .anime-carousel-container{
   padding-top: 1.4rem;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.dropdown-item {
+  color: #333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+}
+
+.user-dropdown-container .dropdown-menu {
+  white-space: nowrap;
+}
+
+
+.language-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.language-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: auto;
+  min-width: 99px;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  padding: 0.5rem 0;
+  animation: dropdownFadeIn 0.2s ease-out;
+}
+
+.language-dropdown .dropdown-item {
+  width: 100%;
+  text-align: center;
+  background: none;
+  border: none;
+  color: #333;
+  padding: 12px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.language-dropdown .dropdown-item.active,
+.language-dropdown .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff ;
 }
