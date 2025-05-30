@@ -532,7 +532,7 @@ def get_user_public_details(username: str):
 
 
 def fetch_anime_results(query: str) -> list[AnimeSearchResult]:
-    external_url = f"https://api.jikan.moe/v4/anime?q={query}&limit=10"
+    external_url = f"https://api.jikan.moe/v4/anime?q={query}&limit=20"
     response = requests.get(external_url)
 
     if not response.ok:

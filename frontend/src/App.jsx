@@ -9,35 +9,31 @@ import ProtectedRoute from "../src/loginpages/ProtectedRoute.jsx";
 import AnimeDetailFromHomePage from "./pages/details-from-homepage.jsx";
 import Header from "./pages/Header.jsx";
 import AnimeDetailFromWatchlist from "./pages/details-from-watchlist.jsx";
+import SearchResultsPage from "./pages/SearchResults.jsx";
+import AnimeDetailFromSearch from "./pages/details-from-search.jsx"
+
 
 function App() {
 
   return (
     <>
       <header>
-          <Header />
+        <Header />
       </header>
       <main>
         <Routes>
-          <Route
-            path="/"
-            element={
-                <HomePage />
-            }
-          />
+          <Route path="/" element={<HomePage />} />
           <Route
             path="/Watchlist"
-            element={
-              <ProtectedRoute>
-                <WatchlistPage />
-              </ProtectedRoute>
-            }
+            element={<WatchlistPage />}
           />
           <Route path="/Login" element={<Login />} />
           <Route path="/Logout" element={<Logout />} />
           <Route path="/Signup" element={<Signup />} />
           <Route path="/anime/:id" element={<AnimeDetailFromHomePage />} />
           <Route path="/anime/Watchlist/:id" element={<AnimeDetailFromWatchlist />} />
+          <Route path="/search/:query" element={<SearchResultsPage />}></Route>
+          <Route path="/anime/search/:mal_id" element={<AnimeDetailFromSearch />} />
         </Routes>
       </main>
     </>
