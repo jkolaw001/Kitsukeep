@@ -85,7 +85,7 @@ export default function AnimeDetailFromHomePage(){
                             </div>
                             <div className="action-buttons">
                                 <a className="play-button" href={anime.trailer} target="_blank" rel="noopener noreferrer">
-                                    <span className="button-icon">▶️</span> Watch Trailer
+                                    <span className="button-icon">▶️</span>  Watch Trailer
                                 </a>
                                 <button
                                     className="watchlist-button"
