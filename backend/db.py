@@ -90,7 +90,15 @@ def create_watchlist_entry(anime: AnimeCreate, request: Request) -> WatchlistOut
         raise HTTPException(status_code=404, detail="User not found")
     check = db.query(DBAnime).where(DBAnime.mal_id == anime.mal_id).first()
     if not check:
-        new_anime = DBAnime(**anime.model_dump())
+        new_anime = DBAnime(
+            title=anime.title,
+            description=anime.description,
+            genre=anime.genre,
+            rating=anime.rating,
+            img_url=anime.img_url,
+            trailer=anime.trailer,
+            mal_id=anime.mal_id,
+        )
         db.add(new_anime)
         db.commit()
         db.refresh(new_anime)
@@ -542,13 +550,38 @@ def fetch_anime_results(query: str) -> list[AnimeSearchResult]:
     results = [
         AnimeSearchResult(
             mal_id=item["mal_id"],
-            image_url=item["images"]["jpg"]["image_url"],
+            img_url=item["images"]["jpg"]["image_url"],
             title=item["title"],
-            description=item["synopsis"],
-            genre=item["genres"][0]["name"],
-            rating=item["rating"],
-            trailer=item["trailer"]["url"],
+            description=item.get("synopsis", "No description available."),
+            genre=item["genres"][0]["name"] if item["genres"] else "Unknown",
+            rating=item.get("rating", "Not rated"),
+            trailer=(
+                item["trailer"]["url"]
+                if item.get("trailer") and item["trailer"].get("url")
+                else None
+            ),
         )
         for item in data
     ]
     return results
+
+
+def fetch_anime_result_by_id(mal_id: int) -> AnimeSearchResult:
+    external_url = f"https://api.jikan.moe/v4/anime/{mal_id}/full"
+    response = requests.get(external_url)
+
+    if not response.ok:
+        raise Exception("External API error")
+
+    data = response.json().get("data")
+    result = AnimeSearchResult(
+        mal_id=data["mal_id"],
+        img_url=data["images"]["jpg"]["image_url"],
+        title=data["title"],
+        description=data["synopsis"],
+        genre=data["genres"][0]["name"],
+        rating=data["rating"],
+        trailer=data["trailer"]["url"],
+    )
+
+    return result

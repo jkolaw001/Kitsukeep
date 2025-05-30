@@ -20,6 +20,7 @@ from db import (
     create_user_account,
     get_user_public_details,
     fetch_anime_results,
+    fetch_anime_result_by_id,
 )
 from schemas import (
     UserCreate,
@@ -73,6 +74,17 @@ app.add_middleware(
 async def search_anime(query: str):
     try:
         return fetch_anime_results(query)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"{e}: No anime with that title was found. Please try again.",
+        )
+
+
+@app.get("/api/anime/search/{mal_id}", response_model=AnimeSearchResult)
+async def search_results_anime(mal_id: int):
+    try:
+        return fetch_anime_result_by_id(mal_id)
     except Exception as e:
         raise HTTPException(
             status_code=500,

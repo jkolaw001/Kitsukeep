@@ -21,7 +21,7 @@ export default function AnimeSearch() {
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search anime by name"
                 />
-                <button type="submit">Search</button>
+                <button type="submit">🔍</button>
             </form>
         </div>
     );
