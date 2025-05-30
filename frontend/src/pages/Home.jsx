@@ -57,8 +57,6 @@ function HomePage() {
 
   return (
     <>
-      <Header />
-
       <div className="anime-carousel-container">
           <AnimeCarousel />
       </div>

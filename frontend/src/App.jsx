@@ -7,32 +7,40 @@ import Logout from "./loginpages/Logout.jsx";
 import Signup from "./loginpages/Signup.jsx";
 import ProtectedRoute from "../src/loginpages/ProtectedRoute.jsx";
 import AnimeDetailFromHomePage from "./pages/details-from-homepage.jsx";
+import Header from "./pages/Header.jsx";
 import AnimeDetailFromWatchlist from "./pages/details-from-watchlist.jsx";
 
 function App() {
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-            <HomePage />
-        }
-      />
-      <Route
-        path="/Watchlist"
-        element={
-          <ProtectedRoute>
-            <WatchlistPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/Login" element={<Login />} />
-      <Route path="/Logout" element={<Logout />} />
-      <Route path="/Signup" element={<Signup />} />
-      <Route path="/anime/:id" element={<AnimeDetailFromHomePage />} />
-      <Route path="/anime/Watchlist/:id" element={<AnimeDetailFromWatchlist />} />
-    </Routes>
+    <>
+      <header>
+          <Header />
+      </header>
+      <main>
+        <Routes>
+          <Route
+            path="/"
+            element={
+                <HomePage />
+            }
+          />
+          <Route
+            path="/Watchlist"
+            element={
+              <ProtectedRoute>
+                <WatchlistPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/Logout" element={<Logout />} />
+          <Route path="/Signup" element={<Signup />} />
+          <Route path="/anime/:id" element={<AnimeDetailFromHomePage />} />
+          <Route path="/anime/Watchlist/:id" element={<AnimeDetailFromWatchlist />} />
+        </Routes>
+      </main>
+    </>
   );
 }
 
