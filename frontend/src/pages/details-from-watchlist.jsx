@@ -44,7 +44,6 @@ export default function AnimeDetailFromWatchlist() {
     }
     return (
         <>
-            < Header />
             <section className="anime-detail">
                 <img src={anime.img_url} alt={anime.title} />
                 <h1>{anime.title}</h1>

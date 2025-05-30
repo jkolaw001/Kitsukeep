@@ -4,11 +4,13 @@ import { getAnime, createWatchlist } from "../api";
 import YouTube from "react-youtube";
 import Header from "./Header";
 import './Details.css'
+import { getAllWatchlists } from "../api";
 
 export default function AnimeDetailFromHomePage() {
     const [anime, setAnime] = useState(null)
     const [error, setError] = useState(null)
     const [showTrailer, setShowTrailer] = useState(false); // <-- Add this
+    const [watchlist, setWatchlist] = useState([])
     const { id } = useParams()
     const navigate = useNavigate();
 
@@ -22,15 +24,28 @@ export default function AnimeDetailFromHomePage() {
             }
             setAnime(anime)
         }
+        async function fetchWatchlist() {
+            const list = await getAllWatchlists();
+            setWatchlist(list)
+        }
         fetchAnime()
-    }, [])
+        fetchWatchlist()
+    }, [id])
 
     function getYouTubeVideoId(url) {
         const regex = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/;
         const match = url.match(regex);
         return match ? match[1] : null;
     }
-
+    async function handleAddToWatchlist() {
+        const alreadyInList = watchlist.some(item => item.title === anime.title);
+        if (!alreadyInList) {
+            await createWatchlist(anime);
+            navigate("/watchlist");
+        } else {
+            alert("Anime is already in your watchlist!");
+        }
+    }
     if (error) {
         return <h1>{error.message}</h1>
     }
@@ -41,7 +56,6 @@ export default function AnimeDetailFromHomePage() {
 
     return (
         <>
-            <Header />
             <div className="page-container">
                 <div className="details-container">
                     <div className="details-content">
@@ -94,6 +108,7 @@ export default function AnimeDetailFromHomePage() {
                 </div>
             </div>
 
+
             {showTrailer && (
                 <div className="modal-overlay" onClick={() => setShowTrailer(false)}>
                     <div className="modal-content" onClick={e => e.stopPropagation()}>
@@ -113,6 +128,29 @@ export default function AnimeDetailFromHomePage() {
                     </div>
                 </div>
             )}
+            <section className="anime-detail">
+                <img src={anime.img_url} alt={anime.title} />
+                <h1>{anime.title}</h1>
+                <p>{anime.genre}</p>
+                <p>{anime.rating}</p>
+                <p>{anime.description}</p>
+            </section>
+             {anime.trailer ? (
+                    <YouTube
+                        videoId={getYouTubeVideoId(anime.trailer)}
+                        opts={{
+                            height: "360",
+                            width: "640",
+                            playerVars: {
+                                autoplay: 0,
+                            },
+                        }}
+                    />
+                ) : (
+                    <h3><b>NO TRAILER AVAILABLE</b></h3>
+                )}
+            <button onClick={handleAddToWatchlist}>Add To WatchList</button>
+
         </>
     )
 }

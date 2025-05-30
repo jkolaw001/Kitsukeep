@@ -255,9 +255,9 @@ export async function getUserDetails() {
     }
 }
 // fetch_anime_results - /api/anime/search
-export async function getAnimeResults() {
+export async function getAnimeResults(query) {
     try {
-        const response = await fetch (`${baseURL}/api/anime/search`);
+        const response = await fetch (`${baseURL}/api/anime/search?query=${encodeURIComponent(query)}`);
         if (!response.ok) {
             throw new Error(`${response.status}`)
         }
