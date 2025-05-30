@@ -26,14 +26,12 @@ export default function SearchResultsPage() {
     return (
         <div>
             <h1>Results for "{query}"</h1>
-            <ul>
-                {results.map((anime) => (
-                    <li key={anime.mal_id}>
-                        <h3>{anime.title}</h3>
-                        <img src={anime.image_url} alt={anime.title} width="100" />
-                    </li>
-                ))}
-            </ul>
+            {results.map((anime) => (
+                <div className="card">
+                    <img src={anime.image_url} alt={anime.title} width="100" />
+                    <h3>{anime.title}</h3>
+                </div>
+            ))}
         </div>
     );
 }
