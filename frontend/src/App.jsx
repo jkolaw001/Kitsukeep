@@ -9,6 +9,7 @@ import ProtectedRoute from "../src/loginpages/ProtectedRoute.jsx";
 import AnimeDetailFromHomePage from "./pages/details-from-homepage.jsx";
 import Header from "./pages/Header.jsx";
 import AnimeDetailFromWatchlist from "./pages/details-from-watchlist.jsx";
+import AnimeResults from "./pages/search-list.jsx";
 
 function App() {
 
@@ -38,6 +39,7 @@ function App() {
           <Route path="/Signup" element={<Signup />} />
           <Route path="/anime/:id" element={<AnimeDetailFromHomePage />} />
           <Route path="/anime/Watchlist/:id" element={<AnimeDetailFromWatchlist />} />
+          <Route path="/search-results" element={<AnimeResults />}></Route>
         </Routes>
       </main>
     </>

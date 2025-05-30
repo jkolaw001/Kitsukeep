@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useUser } from "../loginpages/UserProvider.jsx";
 import "../pages/Home.css";
 import { useTranslation } from "react-i18next";
+import AnimeSearch from "./anime-search.jsx";
 
 export default function Header() {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -22,6 +23,8 @@ export default function Header() {
     i18n.changeLanguage(languageCode);
     setIsLanguageDropdownOpen(false);
   };
+
+
 
   const languages = [
     { code: "EN", name: "English" },
@@ -47,9 +50,9 @@ export default function Header() {
         <div className="right-section">
           <a href="#">{t('header.someStuff')}</a>
           <div className="search-container">
-            <button className="search">
+              <AnimeSearch />
               <span className="icon"> {t('header.search')} 🔍</span>
-            </button>
+
           </div>
           <div className="user-dropdown-container">
             <button className="user-menu" onClick={toggleUserDropdown}>
