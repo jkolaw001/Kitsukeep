@@ -5,11 +5,13 @@ import { createWatchlist } from "../api";
 import YouTube from "react-youtube";
 import Header from "./Header";
 import './Details.css'
+import { getAllWatchlists } from "../api";
 
 export default function AnimeDetailFromHomePage(){
 
     const [anime, setAnime] = useState(null)
     const [error, setError] = useState(null)
+    const [watchlist, setWatchlist] = useState([])
     const { id } = useParams()
     const navigate = useNavigate();
 
@@ -23,15 +25,28 @@ export default function AnimeDetailFromHomePage(){
             }
             setAnime(anime)
         }
+        async function fetchWatchlist() {
+            const list = await getAllWatchlists();
+            setWatchlist(list)
+        }
         fetchAnime()
-    }, [])
+        fetchWatchlist()
+    }, [id])
 
     function getYouTubeVideoId(url) {
         const regex = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/;
         const match = url.match(regex);
         return match ? match[1] : null;
     }
-
+    async function handleAddToWatchlist() {
+        const alreadyInList = watchlist.some(item => item.title === anime.title);
+        if (!alreadyInList) {
+            await createWatchlist(anime);
+            navigate("/watchlist");
+        } else {
+            alert("Anime is already in your watchlist!");
+        }
+    }
     if (error) {
         return <h1>{error.message}</h1>
     }
@@ -111,7 +126,7 @@ export default function AnimeDetailFromHomePage(){
                 ) : (
                     <h3><b>NO TRAILER AVAILABLE</b></h3>
                 )}
-            <button onClick={async () => {await createWatchlist(anime); navigate("/watchlist")}}>Add To WatchList</button>
+            <button onClick={handleAddToWatchlist}>Add To WatchList</button>
 
         </>
     )
