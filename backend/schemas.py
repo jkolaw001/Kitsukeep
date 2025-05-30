@@ -11,7 +11,7 @@ class UserBase(BaseModel):
 
 class AnimeSearchResult(BaseModel):
     mal_id: int
-    image_url: str | None
+    img_url: str | None
     title: str
     description: str | None
     genre: str | None

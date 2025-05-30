@@ -95,7 +95,7 @@ def create_watchlist_entry(anime: AnimeCreate, request: Request) -> WatchlistOut
             description=anime.description,
             genre=anime.genre,
             rating=anime.rating,
-            img_irl=anime.img_url,
+            img_url=anime.img_url,
             trailer=anime.trailer,
             mal_id=anime.mal_id,
         )
@@ -550,7 +550,7 @@ def fetch_anime_results(query: str) -> list[AnimeSearchResult]:
     results = [
         AnimeSearchResult(
             mal_id=item["mal_id"],
-            image_url=item["images"]["jpg"]["image_url"],
+            img_url=item["images"]["jpg"]["image_url"],
             title=item["title"],
             description=item.get("synopsis", "No description available."),
             genre=item["genres"][0]["name"] if item["genres"] else "Unknown",
@@ -576,7 +576,7 @@ def fetch_anime_result_by_id(mal_id: int) -> AnimeSearchResult:
     data = response.json().get("data")
     result = AnimeSearchResult(
         mal_id=data["mal_id"],
-        image_url=data["images"]["jpg"]["image_url"],
+        img_url=data["images"]["jpg"]["image_url"],
         title=data["title"],
         description=data["synopsis"],
         genre=data["genres"][0]["name"],
