@@ -271,3 +271,21 @@ export async function getAnimeResults(query) {
         return new Error("Unexpected Error");
     }
 }
+
+
+export async function getAnimeResultsById(mal_id) {
+    try {
+        const response = await fetch (`${baseURL}/api/anime/search/${mal_id}`);
+        if (!response.ok) {
+            throw new Error(`${response.status}`)
+        }
+        const data = await response.json()
+        return data;
+    } catch (e) {
+        console.error(e);
+        if (e instanceof Error) {
+            return e;
+        }
+        return new Error("Unexpected Error");
+    }
+}

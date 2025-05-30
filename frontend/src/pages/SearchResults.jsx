@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getAnimeResults } from "../api";
+import { Link } from "react-router-dom";
 
 export default function SearchResultsPage() {
     const { query } = useParams();
@@ -27,10 +28,12 @@ export default function SearchResultsPage() {
         <div>
             <h1>Results for "{query}"</h1>
             {results.map((anime) => (
-                <div className="card">
-                    <img src={anime.image_url} alt={anime.title} width="100" />
-                    <h3>{anime.title}</h3>
-                </div>
+                <Link to={`/anime/search/${anime.mal_id}`}>
+                    <div className="card">
+                        <img src={anime.image_url} alt={anime.title} width="100" />
+                        <h3>{anime.title}</h3>
+                    </div>
+                </Link>
             ))}
         </div>
     );
