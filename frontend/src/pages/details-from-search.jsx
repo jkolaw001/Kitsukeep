@@ -46,7 +46,7 @@ export default function AnimeDetailFromSearch() {
                     <div className="details-content">
                         <div className="details-image-section">
                             <img
-                                src={anime.image_url}
+                                src={anime.img_url}
                                 alt={anime.title}
                                 className="detail-image"
                             />
@@ -91,7 +91,7 @@ export default function AnimeDetailFromSearch() {
             </div>
 
             <section className="anime-detail">
-                <img src={anime.image_url} alt={anime.title} />
+                <img src={anime.img_url} alt={anime.title} />
                 <h1>{anime.title}</h1>
                 <p>{anime.genre}</p>
                 <p>{anime.rating}</p>

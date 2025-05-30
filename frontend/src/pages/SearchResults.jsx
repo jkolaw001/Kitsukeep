@@ -30,7 +30,7 @@ export default function SearchResultsPage() {
             {results.map((anime) => (
                 <Link to={`/anime/search/${anime.mal_id}`}>
                     <div className="card">
-                        <img src={anime.image_url} alt={anime.title} width="100" />
+                        <img src={anime.img_url} alt={anime.title} width="100" />
                         <h3>{anime.title}</h3>
                     </div>
                 </Link>
