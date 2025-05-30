@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { getAnime } from "../api";
-import { createWatchlist } from "../api";
+import { getAnime, createWatchlist } from "../api";
 import YouTube from "react-youtube";
 import Header from "./Header";
 import './Details.css'
 import { getAllWatchlists } from "../api";
 
-export default function AnimeDetailFromHomePage(){
-
+export default function AnimeDetailFromHomePage() {
     const [anime, setAnime] = useState(null)
     const [error, setError] = useState(null)
+    const [showTrailer, setShowTrailer] = useState(false); // <-- Add this
     const [watchlist, setWatchlist] = useState([])
     const { id } = useParams()
     const navigate = useNavigate();
@@ -54,6 +53,7 @@ export default function AnimeDetailFromHomePage(){
     if (!anime) {
         return <h1>Loading...</h1>
     }
+
     return (
         <>
             <div className="page-container">
@@ -87,9 +87,12 @@ export default function AnimeDetailFromHomePage(){
                                 </div>
                             </div>
                             <div className="action-buttons">
-                                <a className="play-button" href={anime.trailer} target="_blank" rel="noopener noreferrer">
-                                    <span className="button-icon">▶️</span>  Watch Trailer
-                                </a>
+                                <button
+                                    className="play-button"
+                                    onClick={() => setShowTrailer(true)}
+                                >
+                                    <span className="button-icon">▶️</span> Watch Trailer
+                                </button>
                                 <button
                                     className="watchlist-button"
                                     onClick={async () => {
@@ -105,6 +108,26 @@ export default function AnimeDetailFromHomePage(){
                 </div>
             </div>
 
+
+            {showTrailer && (
+                <div className="modal-overlay" onClick={() => setShowTrailer(false)}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <button className="modal-close" onClick={() => setShowTrailer(false)}>✖</button>
+                        {anime.trailer ? (
+                            <YouTube
+                                videoId={getYouTubeVideoId(anime.trailer)}
+                                opts={{
+                                    height: "360",
+                                    width: "640",
+                                    playerVars: { autoplay: 1 },
+                                }}
+                            />
+                        ) : (
+                            <h3><b>NO TRAILER AVAILABLE</b></h3>
+                        )}
+                    </div>
+                </div>
+            )}
             <section className="anime-detail">
                 <img src={anime.img_url} alt={anime.title} />
                 <h1>{anime.title}</h1>
@@ -130,5 +153,4 @@ export default function AnimeDetailFromHomePage(){
 
         </>
     )
-
 }
