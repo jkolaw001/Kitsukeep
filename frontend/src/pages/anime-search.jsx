@@ -1,37 +1,30 @@
 import { useState } from "react";
-import { getAnimeResults } from "../api";
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 
 export default function AnimeSearch() {
-    const [query, setQuery] = useState([])
-    const [error, setError] = useState(null)
+    const [query, setQuery] = useState("");
+    const navigate = useNavigate();
 
-    async function submitSearch(e) {
-        e.preventDefault()
-        const formData = new FormData(e.target)
-
-        const search = formData.get("query")
-        if (!search || typeof search !== "string") {
-            setError("Invalid Search")
-            return;
+    function handleSearch(e) {
+        e.preventDefault();
+        if (query.trim()) {
+            navigate(`/search/${encodeURIComponent(query.trim())}`);
         }
-
-        const searchResults = await getAnimeResults({ search })
-        if (searchResults instanceof Error) {
-            setError("Couldn't search title, please try again later")
-            return
-        }
-        setQuery(searchResults)
     }
 
     return (
         <div>
-            <form onSubmit={submitSearch}>
-                <input type="text" id="query" name="query" placeholder="Search for anime" required={true} />
-
-                <Link to={"/search-results"}><button type="submit">🔍</button></Link>
+            <form onSubmit={handleSearch}>
+                <input
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search anime by name"
+                />
+                <button type="submit">Search</button>
             </form>
-
         </div>
-    )
+    );
+
+
 }
