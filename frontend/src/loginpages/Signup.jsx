@@ -53,6 +53,7 @@ export default function Signup() {
 
     return (
         <main className="login-container">
+            <title>Kitsukeep | Signup</title>
             <div className="sign-up-logo">
                 <h1 className="logo-title">Kitsukeep.</h1>
             </div>

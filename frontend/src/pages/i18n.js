@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { Carousel } from 'react-bootstrap';
 
 const resources = {
   en: {
@@ -19,6 +20,11 @@ const resources = {
         title: "Welcome to Kitsukeep",
         subtitle: "Your ultimate anime tracking companion",
         getStarted: "Get Started"
+      },
+      carousel: {
+        watchTrailer: "Watch Trailer",
+        moreInfo: "More Info",
+        rating: "Rating",
       }
     }
   },
@@ -39,6 +45,12 @@ const resources = {
         title: "Bienvenido a Kitsukeep",
         subtitle: "Tu compañero definitivo para seguir anime",
         getStarted: "Comenzar"
+      },
+
+      carousel: {
+        watchTrailer: "Ver tráiler",
+        moreInfo: "Más información",
+        rating: "Clasificación",
       }
     }
   },
@@ -58,6 +70,12 @@ const resources = {
         title: "Kitsukeepへようこそ",
         subtitle: "アニメ追跡の究極のパートナー",
         getStarted: "始める"
+      },
+
+      carousel: {
+        watchTrailer: "トレーラーを見る",
+        moreInfo: "もっと詳しく",
+        rating: "評価",
       }
     }
   },
@@ -78,6 +96,12 @@ const resources = {
         title: "Kitsukeep에 오신 것을 환영합니다",
         subtitle: "당신의 궁극적인 애니메이션 추적 동반자",
         getStarted: "시작하기"
+      },
+
+      carousel: {
+        watchTrailer: "예고편 보기",
+        moreInfo: "추가 정보",
+        rating: "평가",
       }
     }
   },
