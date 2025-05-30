@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { getAnime } from "../api";
 import { createWatchlist } from "../api";
-
+import Header from "./Header";
+import './Details.css'
 
 export default function AnimeDetailFromHomePage(){
 
@@ -33,15 +34,53 @@ export default function AnimeDetailFromHomePage(){
     }
     return (
         <>
-            <section className="anime-detail">
-                <img src={anime.img_url} alt={anime.title} />
-                <h1>{anime.title}</h1>
-                <p>{anime.genre}</p>
-                <p>{anime.rating}</p>
-                <p>{anime.description}</p>
-            </section>
-            <a href={anime.trailer}>Watch Trailer</a>
-            <button onClick={async () => {await createWatchlist(anime); navigate("/watchlist")}}>Add To WatchList</button>
+            <Header />
+            <div className="page-container">
+                <div className="details-container">
+                    <div className="details-content">
+                        <div className="details-image-section">
+                            <img
+                                src={anime.img_url}
+                                alt={anime.title}
+                                className="detail-image"
+                            />
+                        </div>
+                        <div className="details-info-section">
+                            <div>
+                                <div className="details-title">{anime.title}</div>
+                                <div className="details-meta-container">
+                                    <div className="details-meta">
+                                        <span className="meta-label">Genre:</span>
+                                        <span>{anime.genre}</span>
+                                    </div>
+                                    <div className="details-meta">
+                                        <span className="meta-label">Rating:</span>
+                                        <span className="rating-badge">{anime.rating}</span>
+                                    </div>
+                                </div>
+                                <div className="description-container">
+                                    <h3>Description</h3>
+                                    <div className="description-text">{anime.description}</div>
+                                </div>
+                            </div>
+                            <div className="action-buttons">
+                                <a className="play-button" href={anime.trailer} target="_blank" rel="noopener noreferrer">
+                                    <span className="button-icon">▶️</span> Watch Trailer
+                                </a>
+                                <button
+                                    className="watchlist-button"
+                                    onClick={async () => {
+                                        await createWatchlist(anime);
+                                        navigate("/watchlist");
+                                    }}
+                                >
+                                    <span className="button-icon">➕</span> Add To WatchList
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </>
     )
 
