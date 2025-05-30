@@ -5,11 +5,6 @@ import { createWatchlist } from "../api";
 import YouTube from "react-youtube";
 import Header from "./Header";
 import './Details.css'
-<<<<<<< frontend/src/pages/details-from-homepage.jsx
-
-=======
-
->>>>>>> frontend/src/pages/details-from-homepage.jsx
 
 export default function AnimeDetailFromHomePage(){
 
@@ -31,11 +26,6 @@ export default function AnimeDetailFromHomePage(){
         fetchAnime()
     }, [])
 
-<<<<<<< frontend/src/pages/details-from-homepage.jsx
-
-
-=======
->>>>>>> frontend/src/pages/details-from-homepage.jsx
     function getYouTubeVideoId(url) {
         const regex = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/;
         const match = url.match(regex);
@@ -51,7 +41,6 @@ export default function AnimeDetailFromHomePage(){
     }
     return (
         <>
-<<<<<<< frontend/src/pages/details-from-homepage.jsx
             <Header />
             <div className="page-container">
                 <div className="details-container">
@@ -102,7 +91,6 @@ export default function AnimeDetailFromHomePage(){
                 </div>
             </div>
 
-=======
             <section className="anime-detail">
                 <img src={anime.img_url} alt={anime.title} />
                 <h1>{anime.title}</h1>
@@ -125,7 +113,7 @@ export default function AnimeDetailFromHomePage(){
                     <h3><b>NO TRAILER AVAILABLE</b></h3>
                 )}
             <button onClick={async () => {await createWatchlist(anime); navigate("/watchlist")}}>Add To WatchList</button>
->>>>>>> frontend/src/pages/details-from-homepage.jsx
+
         </>
     )
 
