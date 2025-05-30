@@ -4,7 +4,6 @@ import { getAnime } from "../api";
 import { Link } from "react-router";
 import { deleteAnimeFromWatchlist } from "../api";
 import { createNote } from "../api";
-import NoteList from "./note-list";
 import AddNote from "./AddNote";
 import YouTube from "react-youtube";
 import "./Home.css";
@@ -66,7 +65,7 @@ export default function AnimeDetailFromWatchlist() {
                 ) : (
                     <p>No trailer available</p>
                 )}
-                <NoteList id={id} />
+                {/* <NoteList id={id} /> */}
             </section>
             <section>
                 <Link to="/Watchlist">
