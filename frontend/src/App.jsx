@@ -15,9 +15,7 @@ function App() {
   return (
     <>
       <header>
-        <nav>
           <Header />
-        </nav>
       </header>
       <main>
         <Routes>

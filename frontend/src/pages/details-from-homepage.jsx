@@ -41,7 +41,6 @@ export default function AnimeDetailFromHomePage(){
     }
     return (
         <>
-            <Header />
             <div className="page-container">
                 <div className="details-container">
                     <div className="details-content">
