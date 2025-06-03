@@ -1,16 +1,21 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router";
 import "./Carousel.css";
-import placeholderImg from "../assets/placeholder.jpg";
-import { useTranslation } from "react-i18next";
-
+import YouTube from "react-youtube";
+import { getAnime, createWatchlist, getAllWatchlists } from "../api";
 
 function AnimeCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoPlaying, setIisAutoPlaying] = useState(true);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [anime, setAnime] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { t } = useTranslation();
+  const [imageLoaded, setImageLoaded] = useState({});
+  const [showTrailer, setShowTrailer] = useState(false);
+  const [watchlist, setWatchlist] = useState([]);
+
+
+  const navigate = useNavigate();
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
@@ -18,6 +23,10 @@ function AnimeCarousel() {
 
   const handleUserDropdownItemClick = () => {
     setIsUserDropdownOpen(false);
+  };
+
+  const handleImageLoad = (animeId) => {
+    setImageLoaded((prev) => ({ ...prev, [animeId]: true }));
   };
 
   useEffect(() => {
@@ -49,108 +58,294 @@ function AnimeCarousel() {
     fetchAnimes();
   }, []);
 
+  useEffect(() => {
+    async function fetchWatchlist() {
+      const list = await getAllWatchlists();
+      setWatchlist(list);
+    }
+    fetchWatchlist();
+  }, []);
+
+  function getYouTubeVideoId(url) {
+    const regex =
+      /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  }
+
+
+async function handleAddToWatchlist(animeSlide) {
+  try {
+    const alreadyInList = watchlist.some((item) => item.title === animeSlide.title);
+    if (!alreadyInList) {
+      const animeForAPI = {
+        title: animeSlide.title,
+        description: animeSlide.description || "No description available",
+        genre: animeSlide.genre || "Unknown",
+        rating: animeSlide.rating || "Not rated",
+        img_url: animeSlide.image,
+        trailer: animeSlide.trailer || null,
+        mal_id: animeSlide.mal_id || animeSlide.id
+      };
+
+      console.log("Adding anime to watchlist:", animeForAPI);
+      const result = await createWatchlist(animeForAPI);
+      console.log("Watchlist creation result:", result);
+
+
+      const updatedWatchlist = await getAllWatchlists();
+      setWatchlist(updatedWatchlist);
+
+      alert("Anime added to watchlist successfully!");
+      navigate("/watchlist");
+    } else {
+      alert("Anime is already in your watchlist!");
+    }
+  } catch (error) {
+    console.error("Error adding to watchlist:", error);
+    alert("Failed to add anime to watchlist. Please try again.");
+  }
+}
+
   const animeSlides = anime.slice(0, 5).map((a) => ({
-    id: a.id,
-    title: a.title,
-    image: a.img_url,
-    rating: a.rating,
-    episodes: a.episodes,
-    description: a.description,
-  }));
+  id: a.id,
+  mal_id: a.mal_id,
+  title: a.title,
+  image: a.img_url,
+  rating: a.rating,
+  episodes: a.episodes,
+  description: a.description,
+  genre: a.genre,
+  trailer: a.trailer,
+}));
 
   useEffect(() => {
     if (!isAutoPlaying) return;
 
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % animeSlides.length);
-    }, 5000);
+    }, 6000);
 
     return () => clearInterval(interval);
   }, [isAutoPlaying, animeSlides.length]);
 
   const gotoSlide = (index) => {
     setCurrentSlide(index);
-    setIisAutoPlaying(false);
-    setTimeout(() => setIisAutoPlaying(true), 10000);
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 15000);
   };
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % animeSlides.length);
-    setIisAutoPlaying(false);
-    setTimeout(() => setIisAutoPlaying(true), 10000);
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 15000);
   };
 
   const prevSlide = () => {
     setCurrentSlide(
       (prev) => (prev - 1 + animeSlides.length) % animeSlides.length
     );
-    setIisAutoPlaying(false);
-    setTimeout(() => setIisAutoPlaying(true), 10000);
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 15000);
   };
 
+  if (loading) {
+    return (
+      <div className="carousel-loading">
+        <div className="carousel-loading-text">Loading...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="carousel-container">
+    <div className="carousel-container full-width-carousel">
       <div className="carousel-wrapper">
         <div
           className="carousel-track"
-          style={{
-            transform: `translateX(-${currentSlide * 100}%)`,
-            transition: "transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-          }}
+          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
           {animeSlides.map((anime, index) => (
             <div key={anime.id} className="carousel-slide">
               <div className="slide-background">
+                <div
+                  className="slide-image"
+                  style={{
+                    backgroundImage: `url(${anime.image})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    width: "100%",
+                    height: "100%",
+                    position: "absolute",
+                    inset: 0,
+                    opacity: imageLoaded[anime.id] ? 1 : 0.8,
+                    transition: "opacity 0.3s ease",
+                  }}
+                />
+
                 <img
                   src={anime.image}
-                  alt={anime.title}
-                  className="slide-image"
+                  alt=""
+                  style={{ display: "none" }}
+                  onLoad={() => handleImageLoad(anime.id)}
                 />
                 <div className="slide-overlay">
                   <div className="overlay-image">
-                    <img
-                    src={anime.image}/>
+                    <img src={anime.image} />
                   </div>
                 </div>
               </div>
-              <div className="slide-content">
-                <div className="slide-info">
-                  <h1 className="slide-title">{anime.title}</h1>
-                  <div className="slide-meta">
-                    <span className="rating">⭐{t('carousel.rating')}: {anime.rating}</span>
 
-                  </div>
-                  <div className="slide-buttons">
-                    <button className="play-button">▶️{t('carousel.watchTrailer')}</button>
-                    <button className="info-button">ℹ️{t('carousel.moreInfo')}</button>
+              <div className="slide-content">
+                <div className="slide-content-inner">
+                  <div className="slide-info">
+                    <h1 className="slide-title">{anime.title}</h1>
+
+                    <div className="slide-meta">
+                      <div className="meta-rating">
+                        <span className="meta-star">★</span>
+                        <span className="meta-score">{anime.rating}</span>
+                      </div>
+                    </div>
+
+                    <div className="slide-genre"> Genre: {anime.genre}</div>
+
+                    <div className="slide-buttons">
+                      <a href={anime.trailer}
+                        className="btn-primary"
+                        target="_blank"
+                        rel="noopener noreferrer"
+
+                      >
+                        <svg
+                          className="btn-icon"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                        WATCH TRAILER
+                      </a>
+                      <button
+                        className="btn-secondary"
+                        onClick={() => handleAddToWatchlist(anime)}
+                      >
+                        <svg
+                          className="btn-icon"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                          />
+                        </svg>
+                        ADD TO WATCHLIST
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           ))}
+          {showTrailer && (
+            <div
+              className="modal-overlay"
+              onClick={() => setShowTrailer(false)}
+            >
+              <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  className="modal-close"
+                  onClick={() => setShowTrailer(false)}
+                >
+                  ✖
+                </button>
+                {animeSlides[currentSlide].trailer ? (
+                  <YouTube
+                    videoId={getYouTubeVideoId(
+                      animeSlides[currentSlide].trailer
+                    )}
+                    opts={{
+                      height: "360",
+                      width: "640",
+                      playerVars: { autoplay: 1 },
+                    }}
+                  />
+                ) : (
+                  <h3>
+                    <b>NO TRAILER AVAILABLE</b>
+                  </h3>
+                )}
+              </div>
+            </div>
+          )}
         </div>
+
         <button
-          className="carousel-arrow carousel-arrow-left"
           onClick={prevSlide}
+          className="carousel-arrow carousel-arrow-left"
         >
-          ‹
+          <svg
+            className="arrow-icon"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
         </button>
         <button
-          className="carousel-arrow carousel-arrow-right"
           onClick={nextSlide}
+          className="carousel-arrow carousel-arrow-right"
         >
-          ›
+          <svg
+            className="arrow-icon"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
         </button>
-        <div className="carousel-dots">
+
+        <div className="carousel-indicators">
           {animeSlides.map((_, index) => (
             <button
               key={index}
+              onClick={() => gotoSlide(index)}
               className={`carousel-dot ${
                 index === currentSlide ? "active" : ""
               }`}
-              onClick={() => gotoSlide(index)}
             />
           ))}
+        </div>
+
+        <div className="carousel-progress-container">
+          <div
+            className={`carousel-progress-bar ${
+              isAutoPlaying ? "animated" : ""
+            }`}
+            style={{
+              width: isAutoPlaying ? "100%" : "0%",
+              animationDuration: isAutoPlaying ? "6s" : "0s",
+            }}
+          />
         </div>
       </div>
     </div>
