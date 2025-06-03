@@ -5,6 +5,7 @@ import { createWatchlist } from "../api";
 import YouTube from "react-youtube";
 import Header from "./Header";
 import './Details.css'
+import './details-from-search.css'
 
 export default function AnimeDetailFromSearch() {
 
