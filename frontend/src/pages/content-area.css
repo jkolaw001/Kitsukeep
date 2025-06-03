@@ -1,0 +1,268 @@
+.content-section {
+  position: relative;
+  z-index: 1;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 8px;
+  padding-left: 24px;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: #bbb;
+  margin-bottom: 20px;
+  padding-left: 24px;
+}
+
+.poster-grid-container {
+  display: flex;
+  gap: 20px;
+  padding: 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  position: relative;
+  z-index: 2;
+  margin-top: -30rem;
+}
+
+.poster-grid-container::-webkit-scrollbar {
+  display: none;
+}
+
+.anime-poster-card {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  background-color: transparent;
+  border-radius: 0;
+  padding: 0;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  min-width: 240px;
+  max-width: 240px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.anime-poster-card:hover {
+  transform: scale(1.05) translateY(-8px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+}
+
+.anime-poster-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 50%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 0;
+  pointer-events: none;
+}
+
+.anime-poster-card:hover::before {
+  opacity: 1;
+}
+
+.poster-img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 0;
+  transition: transform 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.anime-poster-card:hover .poster-img {
+  transform: scale(1.02);
+}
+
+.poster-title {
+  margin-top: 16px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 2.8em;
+}
+
+.poster-sub {
+  font-size: 0.8rem;
+  color: #ff6b35;
+  font-weight: 500;
+  margin-top: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.loading-message,
+.error-message,
+.no-anime-message {
+  text-align: center;
+  padding: 60px 24px;
+  color: #bbb;
+  font-size: 1.1rem;
+}
+
+.error-message {
+  color: #ff6b6b;
+}
+
+.poster-grid-container {
+  position: relative;
+}
+
+
+
+.content-section {
+  padding-bottom: 10px;
+}
+
+.carousel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.scroll-arrow {
+  position: absolute;
+  top: 190px;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-arrow:hover:not(.disabled) {
+  background: rgba(255, 107, 53, 0.9);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+}
+
+.scroll-arrow:active:not(.disabled) {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.scroll-arrow-left {
+  left: 10px;
+}
+
+.scroll-arrow-right {
+  right: 10px;
+}
+
+.scroll-arrow.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.scroll-arrow.disabled:hover {
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .poster-grid-container {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .anime-poster-card {
+    min-width: 200px;
+    max-width: 200px;
+  }
+
+  .poster-img {
+    height: 280px;
+  }
+
+  .section-title {
+    padding-left: 16px;
+    font-size: 1.5rem;
+  }
+
+  .section-subtitle {
+    padding-left: 16px;
+    font-size: 0.9rem;
+  }
+
+
+
+  .scroll-indicator {
+    width: calc(100% - 32px);
+    margin: 16px 16px 24px 16px;
+  }
+
+  .scroll-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+
+  .scroll-arrow-left {
+    left: 5px;
+  }
+
+  .scroll-arrow-right {
+    right: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .anime-poster-card {
+    min-width: 160px;
+    max-width: 160px;
+  }
+
+  .poster-img {
+    height: 240px;
+  }
+
+  .poster-title {
+    font-size: 0.9rem;
+  }
+
+  .poster-sub {
+    font-size: 0.75rem;
+  }
+}

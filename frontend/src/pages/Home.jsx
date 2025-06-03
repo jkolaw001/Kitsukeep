@@ -9,6 +9,7 @@ import AnimeCarousel from "./carousel.jsx";
 import { useUser } from "../loginpages/UserProvider.jsx";
 import Header from "./Header.jsx";
 import AnimeDetailFromHomePage from "./details-from-homepage.jsx";
+import ContentArea from "./content-area.jsx";
 
 function HomePage() {
   const [ isUserDropdownOpen, setIsUserDropdownOpen ] = useState(false);
@@ -62,45 +63,8 @@ function HomePage() {
       </div>
 
 
-       <div className="anime-cards">
-        {loading && (
-          <div className="loading-message">
-            <p>Loading anime...</p>
-          </div>
-        )}
-
-        {error && (
-          <div className="error-message">
-            <p>Error loading anime: {error}</p>
-          </div>
-        )}
-
-        {!loading && !error && anime.length === 0 && (
-          <div className="no-anime-message">
-            <p>No anime found. Add some anime to your database!</p>
-          </div>
-        )}
-
-        {!loading && !error && anime.map((anime) => (
-        <Link to={`/anime/${anime.id}`} key={anime.id} className="card-link">
-          <div className="card">
-            {anime.img_url && (
-              <div className="card-image">
-                <img
-                  src={anime.img_url}
-                  alt={anime.title}
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
-              </div>
-            )}
-            <div className="card-content">
-              <h3 className="card-title">{anime.title}</h3>
-            </div>
-          </div>
-        </Link>
-      ))}
+       <div className="cards">
+        <ContentArea />
       </div>
     </>
   );
