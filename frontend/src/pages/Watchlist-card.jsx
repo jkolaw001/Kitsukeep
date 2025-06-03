@@ -3,13 +3,13 @@ import "./Watchlist.css";
 
 export default function AnimeCard({ anime }) {
   return (
-    <Link className="card" to={`/anime/Watchlist/${anime.anime_id}`}>
-        <div className="card-image">
-          <img src={anime.img_url} alt={anime.title} />
-        </div>
-        <div className="card-content">
-          <h3 className="card-title">{anime.title}</h3>
-        </div>
-    </Link>
+      <Link className="anime-item-link" to={`/anime/Watchlist/${anime.anime_id}`}>
+          <div className="card-image">
+            <img className="anime-poster-image"src={anime.img_url} alt={anime.title} />
+          </div>
+          <h3 className="anime-title-text">{anime.title}</h3>
+          <p className="anime-subtitle-text">{anime.genre}</p>
+      </Link>
+
   );
 }

@@ -35,14 +35,11 @@ function WatchlistPage() {
 
     return (
         <>
-            <div className="nav-container" id="navContainer">
-
-            </div>
-            <div className="watchlist-container">
+            <div className="watchlist-header-section">
                 <h1>| My Watchlist |</h1>
             </div>
-            <div className="anime-cards">
-                <div>{animeCards}</div>
+            <div>
+                <div className="anime-grid-layout">{animeCards}</div>
             </div>
         </>
     );
