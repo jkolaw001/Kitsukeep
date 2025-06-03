@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useUser } from "../loginpages/UserProvider.jsx";
-import "../pages/Home.css";
 import { useTranslation } from "react-i18next";
 import AnimeSearch from "./anime-search.jsx";
-
+import './Header.css'
 export default function Header() {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const { user } = useUser();
   const { t, i18n } = useTranslation();
 
-  const currentLanguage = i18n.language ? i18n.language.toUpperCase().slice(0, 2) : "EN";
+  const currentLanguage = i18n.language
+    ? i18n.language.toUpperCase().slice(0, 2)
+    : "EN";
 
   const toggleUserDropdown = () => setIsUserDropdownOpen((open) => !open);
   const toggleLanguageDropdown = () =>
@@ -23,8 +24,6 @@ export default function Header() {
     i18n.changeLanguage(languageCode);
     setIsLanguageDropdownOpen(false);
   };
-
-
 
   const languages = [
     { code: "EN", name: "English" },
@@ -38,22 +37,21 @@ export default function Header() {
       <div className="header">
         <div className="left-section">
           <Link to="/" className="main-logo">
-            {t('header.logo')}
+            {t("header.logo")}
           </Link>
           <Link to="/Watchlist" className="menu-button">
-            {t('header.watchlist')}
+            {t("header.watchlist")}
           </Link>
           <a href="#" className="menu-button">
-            {t('header.playlists')}
+            {t("header.playlists")}
           </a>
         </div>
         <div className="right-section">
-          <a href="#">{t('header.someStuff')}</a>
+          <a href="#">{t("header.someStuff")}</a>
           <div className="search-container">
-              <AnimeSearch />
-              <span className="icon"> {t('header.search')} 🔍</span>
-
+            <AnimeSearch />
           </div>
+
           <div className="user-dropdown-container">
             <button className="user-menu" onClick={toggleUserDropdown}>
               <span className="icon">👤</span>
@@ -62,28 +60,32 @@ export default function Header() {
             </button>
             {isUserDropdownOpen && (
               <div className="dropdown-menu">
-                <Link
-                  to="/Logout"
-                  className="dropdown-item"
-                  onClick={handleUserDropdownItemClick}
-                >
-                   {t('header.logout')}
-                </Link>
-                <Link
-                  to="/Signup"
-                  className="dropdown-item"
-                  onClick={handleUserDropdownItemClick}
-                >
-                  {t('header.signup')}
-
-                </Link>
-                <Link
-                  to="/Login"
-                  className="dropdown-item"
-                  onClick={handleUserDropdownItemClick}
-                >
-                  {t('header.login')}
-                </Link>
+                {user ? (
+                  <Link
+                    to="/Logout"
+                    className="dropdown-item"
+                    onClick={handleUserDropdownItemClick}
+                  >
+                    {t("header.logout")}
+                  </Link>
+                ) : (
+                  <>
+                    <Link
+                      to="/Signup"
+                      className="dropdown-item"
+                      onClick={handleUserDropdownItemClick}
+                    >
+                      {t("header.signup")}
+                    </Link>
+                    <Link
+                      to="/Login"
+                      className="dropdown-item"
+                      onClick={handleUserDropdownItemClick}
+                    >
+                      {t("header.login")}
+                    </Link>
+                  </>
+                )}
               </div>
             )}
           </div>
