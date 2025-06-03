@@ -36,39 +36,7 @@ function WatchlistPage() {
     return (
         <>
             <div className="nav-container" id="navContainer">
-                <title>Kitsukeep | Watchlist</title>
-                <div className="header">
-                    <div className="left-section">
-                        <Link to='/' className="main-logo">
-                            Kitsukeep
-                        </Link>
-                        <Link to="/Watchlist" className="menu-button">
-                            Watchlist
-                        </Link>
 
-                        <a href="#" className="menu-button">
-                            Playlists
-                        </a>
-                    </div>
-                    <div className="right-section">
-                        <a href="#">Some Stuff</a>
-                        <div className="search-container">
-                            <button className="search">
-                                <span className="icon">🔍</span>
-                            </button>
-                        </div>
-                        <button className="user-menu">
-                            <span className="icon">👤</span>
-                            USER
-                            <span className="icon">▼</span>
-                        </button>
-
-                        <button className="language-button">
-                            EN
-                            <span className="icon">▼</span>
-                        </button>
-                    </div>
-                </div>
             </div>
             <div className="watchlist-container">
                 <h1>| My Watchlist |</h1>
