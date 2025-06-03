@@ -47,7 +47,7 @@ export async function getAllWatchlists() {
     }
 }
 // create_watchlist_entry - /api/watchlists
-export async function(new_watchlist) {
+export async function createWatchlist(new_watchlist) {
     try {
         const response = await fetch (`${baseURL}/api/watchlists`, {
             credentials: "include",
