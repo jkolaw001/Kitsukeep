@@ -1,0 +1,261 @@
+/* DetailsFromSearch.css - Specific styles for search details component */
+
+/* Inherit base styles from Details.css and add search-specific overrides */
+
+/* Modal styles for trailer */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: rgba(20, 20, 20, 0.95);
+    border-radius: 16px;
+    padding: 30px;
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    border: 2px solid #333;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.8);
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: rgba(229, 9, 20, 0.8);
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 50%;
+    z-index: 1001;
+    transition: background 0.2s, transform 0.2s;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    background: #e50914;
+    transform: scale(1.1);
+}
+
+/* Loading spinner */
+.btn-spinner {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid #ffffff;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Add to Watchlist button - extends base button styles */
+.watchlist-button {
+    background: linear-gradient(135deg, #28a745 0%, #20963d 100%);
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.08rem;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.4);
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.watchlist-button:hover:not(:disabled) {
+    background: linear-gradient(135deg, #20963d 0%, #1e7e34 100%);
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.5);
+}
+
+.watchlist-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Success state for add button */
+.watchlist-button.added {
+    background: linear-gradient(135deg, #28a745 0%, #20963d 100%);
+    cursor: default;
+    animation: successPulse 0.6s ease-out;
+}
+
+.watchlist-button.added:hover {
+    background: linear-gradient(135deg, #28a745 0%, #20963d 100%);
+    transform: none;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.4);
+}
+
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Error container styles */
+.error-container {
+    text-align: center;
+    padding: 60px 40px;
+    color: #fff;
+    background: rgba(20, 20, 20, 0.8);
+    border-radius: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 2px solid #333;
+}
+
+.error-container h1 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+.error-container a {
+    color: #e50914;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 8px 16px;
+    border: 2px solid #e50914;
+    border-radius: 6px;
+    display: inline-block;
+    margin-top: 16px;
+    transition: all 0.2s ease;
+}
+
+.error-container a:hover {
+    background: #e50914;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Search-specific metadata styling */
+.search-metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.search-metadata .meta-separator {
+    color: #666;
+    margin: 0 4px;
+}
+
+/* Enhanced rating badge for search results */
+.search-rating-badge {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #222;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-weight: 700;
+    margin-left: 6px;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+    border: 1px solid #ffed4e;
+}
+
+/* Additional info chips for search results */
+.info-chip {
+    background: rgba(229, 9, 20, 0.2);
+    color: #ff6b6b;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid rgba(229, 9, 20, 0.3);
+}
+
+/* Loading state styles */
+.loading-container {
+    text-align: center;
+    padding: 80px 40px;
+    color: #fff;
+}
+
+.loading-container h1 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.loading-spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #e50914;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+/* Responsive adjustments for search details */
+@media (max-width: 900px) {
+    .modal-content {
+        padding: 20px;
+        margin: 20px;
+    }
+
+    .error-container {
+        margin: 20px;
+        padding: 40px 20px;
+    }
+
+    .search-metadata {
+        font-size: 1rem;
+    }
+
+    .info-chip {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .modal-content {
+        padding: 15px;
+        margin: 10px;
+    }
+
+    .modal-close {
+        top: 8px;
+        right: 8px;
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .watchlist-button,
+    .play-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
