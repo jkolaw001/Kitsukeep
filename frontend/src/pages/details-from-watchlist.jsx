@@ -8,7 +8,7 @@ import AddNote from "./AddNote";
 import YouTube from "react-youtube";
 import "./Home.css";
 import Header from "./Header";
-
+import NoteList from "./note-list";
 
 export default function AnimeDetailFromWatchlist() {
 
@@ -64,7 +64,7 @@ export default function AnimeDetailFromWatchlist() {
                 ) : (
                     <h3><b>NO TRAILER AVAILABLE</b></h3>
                 )}
-                {/* <NoteList id={id} /> */}
+                <NoteList id={id} />
             </section>
             <section>
                 <Link to="/Watchlist">
