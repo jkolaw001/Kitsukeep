@@ -5,6 +5,8 @@ import YouTube from "react-youtube";
 import Header from "./Header";
 import './Details.css'
 import { getAllWatchlists } from "../api";
+import { useTranslation } from "react-i18next";
+
 
 export default function AnimeDetailFromHomePage() {
     const [anime, setAnime] = useState(null)
@@ -13,6 +15,27 @@ export default function AnimeDetailFromHomePage() {
     const [watchlist, setWatchlist] = useState([])
     const { id } = useParams()
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
+
+    const currentLanguage = i18n.language
+    ? i18n.language.toUpperCase().slice(0, 2)
+    : "EN";
+    const toggleLanguageDropdown = () =>
+    setIsLanguageDropdownOpen((open) => !open);
+
+
+    const handleLanguageChange = (language) => {
+    const languageCode = language.toLowerCase();
+    i18n.changeLanguage(languageCode);
+    setIsLanguageDropdownOpen(false);
+  };
+
+  const languages = [
+    { code: "EN", name: "English" },
+    { code: "ES", name: "Español" },
+    { code: "JA", name: "日本語" },
+    { code: "KO", name: "한국어" },
+  ];
 
     useEffect(() => {
         async function fetchAnime(){
@@ -84,17 +107,17 @@ export default function AnimeDetailFromHomePage() {
                                 <div className="details-meta-container">
                                     <div className="details-meta details-meta-column">
                                         <div>
-                                            <span className="meta-label">Genre: </span>
+                                            <span className="meta-label">{t("detailsfromhome.genre")}: </span>
                                             <span>{anime.genre}</span>
                                         </div>
                                         <div>
-                                            <span className="meta-label">Rating: </span>
+                                            <span className="meta-label">{t("detailsfromhome.rating")}: </span>
                                             <span className="rating-badge">{anime.rating}</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="description-container">
-                                    <h3>Description</h3>
+                                    <h3>{t("detailsfromhome.description")}</h3>
                                     <div className="description-text">{anime.description}</div>
                                 </div>
                             </div>
@@ -103,13 +126,13 @@ export default function AnimeDetailFromHomePage() {
                                     className="play-button"
                                     onClick={() => setShowTrailer(true)}
                                 >
-                                    <span className="button-icon">▶️</span> Watch Trailer
+                                    <span className="button-icon">▶️</span> {t("detailsfromhome.watchtrailer")}
                                 </button>
                                 <button
                                     className="watchlist-button"
                                     onClick={handleAddToWatchlist}
                                 >
-                                    <span className="button-icon">➕</span> Add To WatchList
+                                    <span className="button-icon">➕</span> {t("detailsfromhome.add")}
                                 </button>
                             </div>
                         </div>

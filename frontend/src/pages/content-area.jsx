@@ -1,11 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import "./content-area.css";
 import { Link } from "react-router-dom";
-import WatchlistPage from "./Watchlist.jsx";
-import Login from "../loginpages/Login.jsx";
-import Logout from "../loginpages/Logout.jsx";
-import Signup from "../loginpages/Signup.jsx";
-import AnimeCarousel from "./carousel.jsx";
+import { useTranslation } from "react-i18next";
+
 import { useUser } from "../loginpages/UserProvider.jsx";
 import Header from "./Header.jsx";
 import AnimeDetailFromHomePage from "./details-from-homepage.jsx";
@@ -19,6 +16,25 @@ function ContentArea() {
   const scrollContainerRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
+  const { t, i18n } = useTranslation();
+
+  const currentLanguage = i18n.language
+    ? i18n.language.toUpperCase().slice(0, 2)
+    : "EN";
+
+  const handleLanguageChange = (language) => {
+    const languageCode = language.toLowerCase();
+    i18n.changeLanguage(languageCode);
+    setIsLanguageDropdownOpen(false);
+  };
+
+  const languages = [
+    { code: "EN", name: "English" },
+    { code: "ES", name: "Español" },
+    { code: "JA", name: "日本語" },
+    { code: "KO", name: "한국어" },
+  ];
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
@@ -101,7 +117,6 @@ function ContentArea() {
   }, []);
 
   useEffect(() => {
-    // Check scroll buttons when anime data loads
     if (anime.length > 0) {
       setTimeout(checkScrollButtons, 100);
     }
@@ -110,8 +125,8 @@ function ContentArea() {
   return (
     <>
       <div className="content-section">
-        <h2 className="section-title">Explore Recent Additions</h2>
-        <p className="section-subtitle">Relive the Magic</p>
+        <h2 className="section-title">{t("contentarea.sectiontitle")}</h2>
+        <p className="section-subtitle">{t("contentarea.sectionsubtitle")}</p>
 
         {loading && (
           <div className="loading-message">
