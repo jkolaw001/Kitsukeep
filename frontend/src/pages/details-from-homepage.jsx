@@ -37,15 +37,27 @@ export default function AnimeDetailFromHomePage() {
         const match = url.match(regex);
         return match ? match[1] : null;
     }
+
     async function handleAddToWatchlist() {
-        const alreadyInList = watchlist.some(item => item.title === anime.title);
-        if (!alreadyInList) {
-            await createWatchlist(anime);
-            navigate("/watchlist");
-        } else {
-            alert("Anime is already in your watchlist!");
+        try {
+            const alreadyInList = watchlist.some(item => item.title === anime.title);
+            if (!alreadyInList) {
+                await createWatchlist(anime);
+
+                const updatedWatchlist = await getAllWatchlists();
+                setWatchlist(updatedWatchlist);
+
+                alert("Anime added to watchlist successfully!");
+                navigate("/watchlist");
+            } else {
+                alert("Anime is already in your watchlist!");
+            }
+        } catch (error) {
+            console.error("Error adding to watchlist:", error);
+            alert("Failed to add anime to watchlist. Please try again.");
         }
     }
+
     if (error) {
         return <h1>{error.message}</h1>
     }
@@ -95,10 +107,7 @@ export default function AnimeDetailFromHomePage() {
                                 </button>
                                 <button
                                     className="watchlist-button"
-                                    onClick={async () => {
-                                        await createWatchlist(anime);
-                                        navigate("/watchlist");
-                                    }}
+                                    onClick={handleAddToWatchlist}
                                 >
                                     <span className="button-icon">➕</span> Add To WatchList
                                 </button>
@@ -107,7 +116,6 @@ export default function AnimeDetailFromHomePage() {
                     </div>
                 </div>
             </div>
-
 
             {showTrailer && (
                 <div className="modal-overlay" onClick={() => setShowTrailer(false)}>
