@@ -90,30 +90,6 @@ export default function AnimeDetailFromSearch() {
                     </div>
                 </div>
             </div>
-
-            <section className="anime-detail">
-                <img src={anime.img_url} alt={anime.title} />
-                <h1>{anime.title}</h1>
-                <p>{anime.genre}</p>
-                <p>{anime.rating}</p>
-                <p>{anime.description}</p>
-            </section>
-            {anime.trailer ? (
-                <YouTube
-                    videoId={getYouTubeVideoId(anime.trailer)}
-                    opts={{
-                        height: "360",
-                        width: "640",
-                        playerVars: {
-                            autoplay: 0,
-                        },
-                    }}
-                />
-            ) : (
-                <h3><b>NO TRAILER AVAILABLE</b></h3>
-            )}
-            <button onClick={async () => { await createWatchlist(anime); navigate("/watchlist") }}>Add To WatchList</button>
-
         </>
     )
 
