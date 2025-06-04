@@ -82,15 +82,19 @@ def get_all_watchlists(request: Request) -> list[WatchlistWithAnimeOut]:
 
 
 def create_watchlist_entry(anime: AnimeCreate, request: Request) -> WatchlistOut:
-
     db = sessionLocal()
+
     username = request.session.get("username")
     user_id = db.query(DBUser.id).filter(DBUser.username == username).scalar()
     if user_id is None:
+        db.close()
         raise HTTPException(status_code=404, detail="User not found")
-    check = db.query(DBAnime).where(DBAnime.mal_id == anime.mal_id).first()
-    if not check:
-        new_anime = DBAnime(
+
+    # Check if anime already exists in DBAnime table
+    anime_entry = db.query(DBAnime).filter(DBAnime.mal_id == anime.mal_id).first()
+
+    if anime_entry is None:
+        anime_entry = DBAnime(
             title=anime.title,
             description=anime.description,
             genre=anime.genre,
@@ -99,31 +103,29 @@ def create_watchlist_entry(anime: AnimeCreate, request: Request) -> WatchlistOut
             trailer=anime.trailer,
             mal_id=anime.mal_id,
         )
-        db.add(new_anime)
+        db.add(anime_entry)
         db.commit()
-        db.refresh(new_anime)
-        add_to_watchlist = DBWatchlist(anime_id=new_anime.id, user_id=user_id)
-        db.add(add_to_watchlist)
-        db.commit()
-        db.refresh(add_to_watchlist)
-        result = WatchlistOut(
-            watchlist_id=add_to_watchlist.id,
-            user_id=add_to_watchlist.user_id,
-            anime_id=add_to_watchlist.anime_id,
-        )
+        db.refresh(anime_entry)
 
+    # Check if the anime is already in the user's watchlist
+    duplicate_check = db.query(DBWatchlist).filter(
+        DBWatchlist.anime_id == anime_entry.id,
+        DBWatchlist.user_id == user_id
+    ).first()
+
+    if duplicate_check:
         db.close()
-        return result
+        raise HTTPException(status_code=400, detail="Anime is already in watchlist")
 
-    add_to_watchlist = DBWatchlist(anime_id=check.id, user_id=user_id)
-    db.add(add_to_watchlist)
+    watchlist_entry = DBWatchlist(anime_id=anime_entry.id, user_id=user_id)
+    db.add(watchlist_entry)
     db.commit()
-    db.refresh(add_to_watchlist)
+    db.refresh(watchlist_entry)
 
     result = WatchlistOut(
-        watchlist_id=add_to_watchlist.id,
-        user_id=add_to_watchlist.user_id,
-        anime_id=add_to_watchlist.anime_id,
+        watchlist_id=watchlist_entry.id,
+        user_id=watchlist_entry.user_id,
+        anime_id=watchlist_entry.anime_id,
     )
 
     db.close()
