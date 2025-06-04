@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router";
 import "./Carousel.css";
 import YouTube from "react-youtube";
 import { getAnime, createWatchlist, getAllWatchlists } from "../api";
+import { useTranslation } from "react-i18next";
+import { Carousel } from "react-bootstrap";
 
 function AnimeCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -13,7 +15,27 @@ function AnimeCarousel() {
   const [imageLoaded, setImageLoaded] = useState({});
   const [showTrailer, setShowTrailer] = useState(false);
   const [watchlist, setWatchlist] = useState([]);
+  const { t, i18n } = useTranslation();
 
+  const currentLanguage = i18n.language
+    ? i18n.language.toUpperCase().slice(0, 2)
+    : "EN";
+
+  const toggleLanguageDropdown = () =>
+    setIsLanguageDropdownOpen((open) => !open);
+
+  const handleLanguageChange = (language) => {
+    const languageCode = language.toLowerCase();
+    i18n.changeLanguage(languageCode);
+    setIsLanguageDropdownOpen(false);
+  };
+
+  const languages = [
+    { code: "EN", name: "English" },
+    { code: "ES", name: "Español" },
+    { code: "JA", name: "日本語" },
+    { code: "KO", name: "한국어" },
+  ];
 
   const navigate = useNavigate();
 
@@ -73,51 +95,51 @@ function AnimeCarousel() {
     return match ? match[1] : null;
   }
 
+  async function handleAddToWatchlist(animeSlide) {
+    try {
+      const alreadyInList = watchlist.some(
+        (item) => item.title === animeSlide.title
+      );
+      if (!alreadyInList) {
+        const animeForAPI = {
+          title: animeSlide.title,
+          description: animeSlide.description || "No description available",
+          genre: animeSlide.genre || "Unknown",
+          rating: animeSlide.rating || "Not rated",
+          img_url: animeSlide.image,
+          trailer: animeSlide.trailer || null,
+          mal_id: animeSlide.mal_id || animeSlide.id,
+        };
 
-async function handleAddToWatchlist(animeSlide) {
-  try {
-    const alreadyInList = watchlist.some((item) => item.title === animeSlide.title);
-    if (!alreadyInList) {
-      const animeForAPI = {
-        title: animeSlide.title,
-        description: animeSlide.description || "No description available",
-        genre: animeSlide.genre || "Unknown",
-        rating: animeSlide.rating || "Not rated",
-        img_url: animeSlide.image,
-        trailer: animeSlide.trailer || null,
-        mal_id: animeSlide.mal_id || animeSlide.id
-      };
+        console.log("Adding anime to watchlist:", animeForAPI);
+        const result = await createWatchlist(animeForAPI);
+        console.log("Watchlist creation result:", result);
 
-      console.log("Adding anime to watchlist:", animeForAPI);
-      const result = await createWatchlist(animeForAPI);
-      console.log("Watchlist creation result:", result);
+        const updatedWatchlist = await getAllWatchlists();
+        setWatchlist(updatedWatchlist);
 
-
-      const updatedWatchlist = await getAllWatchlists();
-      setWatchlist(updatedWatchlist);
-
-      alert("Anime added to watchlist successfully!");
-      navigate("/watchlist");
-    } else {
-      alert("Anime is already in your watchlist!");
+        alert("Anime added to watchlist successfully!");
+        navigate("/watchlist");
+      } else {
+        alert("Anime is already in your watchlist!");
+      }
+    } catch (error) {
+      console.error("Error adding to watchlist:", error);
+      alert("Failed to add anime to watchlist. Please try again.");
     }
-  } catch (error) {
-    console.error("Error adding to watchlist:", error);
-    alert("Failed to add anime to watchlist. Please try again.");
   }
-}
 
   const animeSlides = anime.slice(0, 5).map((a) => ({
-  id: a.id,
-  mal_id: a.mal_id,
-  title: a.title,
-  image: a.img_url,
-  rating: a.rating,
-  episodes: a.episodes,
-  description: a.description,
-  genre: a.genre,
-  trailer: a.trailer,
-}));
+    id: a.id,
+    mal_id: a.mal_id,
+    title: a.title,
+    image: a.img_url,
+    rating: a.rating,
+    episodes: a.episodes,
+    description: a.description,
+    genre: a.genre,
+    trailer: a.trailer,
+  }));
 
   useEffect(() => {
     if (!isAutoPlaying) return;
@@ -208,14 +230,14 @@ async function handleAddToWatchlist(animeSlide) {
                       </div>
                     </div>
 
-                    <div className="slide-genre"> Genre: {anime.genre}</div>
+                    <div className="slide-genre"> {t("carousel.genre")}: {anime.genre}</div>
 
                     <div className="slide-buttons">
-                      <a href={anime.trailer}
+                      <a
+                        href={anime.trailer}
                         className="btn-primary"
                         target="_blank"
                         rel="noopener noreferrer"
-
                       >
                         <svg
                           className="btn-icon"
@@ -224,7 +246,7 @@ async function handleAddToWatchlist(animeSlide) {
                         >
                           <path d="M8 5v14l11-7z" />
                         </svg>
-                        WATCH TRAILER
+                        {t("carousel.watchTrailer")}
                       </a>
                       <button
                         className="btn-secondary"
@@ -243,7 +265,7 @@ async function handleAddToWatchlist(animeSlide) {
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                           />
                         </svg>
-                        ADD TO WATCHLIST
+                        {t("carousel.add")}
                       </button>
                     </div>
                   </div>
