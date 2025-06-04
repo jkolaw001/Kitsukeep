@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { getAnimeResults } from "../api";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
+import "./SearchResults.css";
 
 export default function SearchResultsPage() {
     const { query } = useParams();
@@ -32,7 +32,6 @@ export default function SearchResultsPage() {
     { code: "KO", name: "한국어" },
   ];
 
-
     useEffect(() => {
         async function fetchData() {
             const data = await getAnimeResults(query);
@@ -51,15 +50,23 @@ export default function SearchResultsPage() {
 
     return (
         <div>
-            <h1>{t("searchresults.title")} {query}</h1>
-            {results.map((anime) => (
-                <Link to={`/anime/search/${anime.mal_id}`}>
-                    <div className="card">
-                        <img src={anime.img_url} alt={anime.title} width="100" />
-                        <h3>{anime.title}</h3>
-                    </div>
-                </Link>
-            ))}
+            <div className="search-results-header">
+                <h2>{t("searchresults.title")} "{query}"</h2>
+            </div>
+            <div className="search-results-grid">
+                {results.map((anime) => (
+                    <Link key={anime.mal_id} to={`/anime/search/${anime.mal_id}`} className="search-result-link">
+                        <div className="search-result-card">
+                            <img
+                                src={anime.img_url}
+                                alt={anime.title}
+                                className="search-result-image"
+                            />
+                            <h3 className="search-result-title">{anime.title}</h3>
+                        </div>
+                    </Link>
+                ))}
+            </div>
         </div>
     );
 }
