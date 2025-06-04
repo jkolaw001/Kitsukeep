@@ -359,6 +359,12 @@ def delete_note(anime_id: int, note_id: int, request: Request):
         .filter(DBNotes.id == note_id, DBNotes.anime_id == anime_id)
         .first()
     )
+    if note_model is None:
+        db.close()
+        raise HTTPException(status_code=404, detail="Note Not Found")
+    if note_model.user_id != user_id:
+        db.close()
+        raise HTTPException(status_code=403, detail="Not authorized to delete notes that are not yours")
     db.delete(note_model)
     db.commit()
     db.close()
