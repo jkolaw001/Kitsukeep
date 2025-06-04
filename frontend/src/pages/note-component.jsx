@@ -1,12 +1,13 @@
+import './note-component.css'
 
 
-
-export default function Note({ note }) {
+export default function Note({ note, onDelete }) {
 
     return (
         <>
-            <div>
+            <div className="note-item">
                 <p>{note.note}</p>
+                <button className="button-delete" onClick={onDelete}>Delete Note</button>
             </div>
         </>
     )
