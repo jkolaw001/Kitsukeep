@@ -36,7 +36,7 @@ function WatchlistPage() {
     return (
         <>
             <div className="watchlist-header-section">
-                <h1>| My Watchlist |</h1>
+                <h1 className="watchlist-title">Your Keep</h1>
             </div>
             <div>
                 <div className="anime-grid-layout">{animeCards}</div>
