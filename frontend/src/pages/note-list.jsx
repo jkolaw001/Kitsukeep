@@ -1,6 +1,6 @@
 import { useParams } from "react-router"
 import { useEffect, useState } from "react"
-import { createNote, getAllAnimeNotes } from "../api"
+import { createNote, getAllAnimeNotes, deleteNote } from "../api"
 import AddNote from "./AddNote"
 import Note from "./note-component"
 
@@ -21,14 +21,23 @@ export default function NoteList({id}) {
             }
             setNotes(notes)
         })
-    }, [])
+    }, [id])
+
+    async function handleDeleteNote(noteId) {
+        const result = await deleteNote(id, noteId);
+        if (!(result instanceof Error)) {
+            setNotes(prev => prev.filter(n => n.id !== noteId));
+        } else {
+            alert("Couldn't delete note");
+        }
+    }
     if (error){
         return <h1>{error}</h1>
     }
 
     console.log(notes)
     const noteElements = notes.map(note => {
-        return <Note key={note.id} note={note} />
+        return <Note key={note.id} note={note} onDelete={() => handleDeleteNote(note.id)}/>
     })
     return (
         <div className="note-list">

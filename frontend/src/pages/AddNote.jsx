@@ -46,14 +46,17 @@ export default function AddNote({onRefreshNotes}) {
             >Add a Note</button>
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <form onSubmit={submitForm} className="create-note-form">
-                    <label htmlFor="note">Notes</label>
+                    <label className="note-label" htmlFor="note">Notes</label>
+                    <p></p>
                     <textarea
+                        className="textarea"
                         name="note"
                         id="note"
                         placeholder="Add new note"
                         required={true}
                     ></textarea>
-                    <button type="submit">Submit</button>
+                    <p></p>
+                    <button className="button-color" type="submit">Submit</button>
                 </form>
             </Modal>
         </div>
