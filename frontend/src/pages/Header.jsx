@@ -47,7 +47,6 @@ export default function Header() {
           </a>
         </div>
         <div className="right-section">
-          <a href="#">{t("header.someStuff")}</a>
           <div className="search-container">
             <AnimeSearch />
           </div>
