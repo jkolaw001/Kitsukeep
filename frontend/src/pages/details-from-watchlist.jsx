@@ -97,14 +97,16 @@ export default function AnimeDetailFromWatchlist() {
                                         </div>
                                     </div>
                                     <div className="action-buttons">
+                                        <section className="center-watch-trailer">
                                         <button
                                             className="play-button"
                                             onClick={() => setShowTrailer(true)}
                                         >
                                             <span className="button-icon">▶️</span> {t("detailsfromhome.watchtrailer")}
                                         </button>
+                                        </section>
                                         <div className="note-center-items">
-                                        <section>
+                                        <section className="center-watch-trailer">
                                         <NoteList id={id} />
                                          </section>
                                         <section>

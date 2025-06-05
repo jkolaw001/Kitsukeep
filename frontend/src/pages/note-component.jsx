@@ -7,7 +7,7 @@ export default function Note({ note, onDelete }) {
         <>
             <div className="note-item">
                 <p>{note.note}</p>
-                <button className="button-delete" onClick={onDelete}>Delete Note</button>
+                <button className="button-delete" onClick={onDelete}>X</button>
             </div>
         </>
     )
