@@ -1,93 +1,235 @@
 # CapstoneProject
+Welcome to KitsuKeep -- Your Anime. Your Notes. Your World.
 
+# Contributors
 
+Connor Graves - https://gitlab.galvanize.com/connor.graves94
+Jacob Ortiz - https://gitlab.galvanize.com/jortiz35
+Michael Anthony Flores Jr. - https://gitlab.galvanize.com/maf1113
+Joel Kolawole - https://gitlab.galvanize.com/jkolaw00
 
-## Getting started
+# Project Description
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+KitsuKeep – Your Ultimate Anime Companion
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+Dive into the world of anime with KitsuKeep, the all-in-one app designed for fans who love to watch, review, and stay organized. Whether you're a casual viewer or a seasoned otaku, KitsuKeep helps you track your journey with access to over   15,000 anime titles using an external api.
 
-## Add your files
+🔸 Discover the Best – Explore our curated homepage featuring the top 20 highest-rated anime of all time.
+🔸 Build Your Watchlist – Add or remove anime from your personal watchlist and keep track of what you’re watching, finished, or planning next.
+🔸 Leave Your Thoughts – Create and delete notes for any anime in your watchlist. Share impressions, rate characters, or jot down epic moments.
+🔸 Search with Power – Instantly search across thousands of titles to find your next binge-worthy series.
+🔸 Preview Before You Watch – Watch trailers and read detailed descriptions to decide what’s worth your time.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+Whether you're keeping track of your favorite shows or discovering new ones, KitsuKeep makes your anime experience smarter, simpler, and more personal.
 
+# User Stories
+
+As a user,
+I want to view the anime on the homepage,
+So that I can easily discover what’s popular and worth watching.
+
+As a user,
+I want to add anime titles to my watchlist,
+So that I can keep track of shows I’m interested in watching.
+
+As a user,
+I want to remove anime from my watchlist,
+So that I can keep my list organized and relevant to my current interests.
+
+As a user,
+I want to create personal notes for anime in my watchlist,
+So that I can remember my thoughts, reactions, or favorite moments.
+
+As a user,
+I want to delete notes I’ve written,
+So that I can remove outdated or unwanted content from my records.
+
+As a user,
+I want to search from a vast library of over 15,000 anime titles,
+So that I can quickly find shows I’m looking for or discover new ones.
+
+As a user,
+I want to watch trailers for anime,
+So that I can get a preview before deciding whether to add it to my watchlist.
+
+As a user,
+I want to read detailed descriptions of each anime,
+So that I can better understand the plot and decide if it matches my interests.
+
+As a new user,
+I want to create an account,
+So that I can save my watchlist, notes, and preferences for future visits.
+
+As a returning user,
+I want to log in to my account,
+So that I can access my personalized watchlist and notes.
+
+As a logged-in user,
+I want to log out of my account,
+So that I can protect my information and ensure my activity is private on shared devices.
+
+# Screenshots
+
+![home page carousel](screenshots/capture.jpg)
+![home page anime list](screenshots/capture2.jpg)
+![watchlist](screenshots/capture3.jpg)
+![search list](screenshots/capture4.jpg)
+![anime details page](screenshots/capture5.jpg)
+![sign in page](screenshots/capture6.jpg)
+![sign up page](screenshots/capture7.jpg)
+![youtube trailer modal](screenshots/capture8.jpg)
+
+# List of features implemented
+🔝 Anime Homepage
+Displays a curated list of the highest-rated anime on the homepage.
+
+🔍 Anime Search
+Search through a library of over 15,000 anime titles using keywords.
+
+📋 Watchlist Management
+
+Add anime to a personal watchlist
+
+Remove anime from the watchlist
+
+📝 Note-Taking System
+
+Create notes for any anime in your watchlist
+
+Delete existing notes
+
+🎥 Trailer Viewing
+Watch official trailers for anime titles before committing to watch them.
+
+📖 Anime Descriptions
+View detailed descriptions and metadata for each anime title.
+
+🔐 User Authentication
+
+Sign up for a new account
+
+Log in to an existing account
+
+Log out securely
+
+# Tech stack
+
+🚀 Frontend
+React – Component-based UI library
+
+JavaScript – Programming language for dynamic UI behavior
+
+Vite – Frontend build tool and dev server
+
+React Router – Client-side routing for single-page apps
+
+i18next – Internationalization library for translating UI
+
+⚙️ Backend
+Python – Core language for server-side logic
+
+FastAPI – Modern, high-performance web API framework
+
+Requests – Simple HTTP client for API calls
+
+ItsDangerous – Secure session and token handling
+
+bcrypt – Secure password hashing for user auth
+
+🗄️ Database
+PostgreSQL – Relational database system
+
+SQLAlchemy – ORM for Python and SQL abstraction
+
+psycopg – PostgreSQL adapter for Python
+
+# Start Up
+
+Backend
+
+The following instructions will install the dependencies needed for the app to function
 ```
-cd existing_repo
-git remote add origin https://gitlab.galvanize.com/maf1113/capstoneproject.git
-git branch -M main
-git push -uf origin main
+in terminal change directories to the backend using
 ```
+cd capstone/backend
+```
+once in the backend use this command to create a virtual environment
+```
+python -m venv .venv
+```
+now that you have the environment activate it using
+```
+source .venv/bin/acivate
+```
+now that your environment is activated run this commant do install the depencies needed
+```
+pip install -r requirements.txt
+```
+once dependencies are installed run this command to get the fastapi server running
+```
+fastapi dev
+```
+to ensure that the sever is running go to http://localhost:8000/docs#/default
 
-## Integrate with your tools
+# Database
 
-- [ ] [Set up project integrations](https://gitlab.galvanize.com/maf1113/capstoneproject/-/settings/integrations)
+The included docker-compose file will run a Postgres database server. The
+following command will start the docker container and database server:
+```
+docker compose up -d
+```
+To make sure that there are no pre-existing docker files that will interrupt this project run this command before you write the command above in your terminal
+```
+docker kill $(docker ps -q)
+docker system prune -af
+```
+To connect to the psql shell on the database server use this command
+```
+docker compose exec postgres psql -U postgres anime
+```
+once in anime database use this command to create tables
+```
+\i data/anime.sql
+```
+to populate the anime table run the "populate_database.py" file in the backend directory
 
-## Collaborate with your team
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+Frontend
 
-## Test and Deploy
+The following instruciton will get the frontend dependencies installed and running
+```
+To change into the frontend directory use this command
+```
+cd capstone/frontend
+```
+Once in the frontend directory you need to install the dependencies using...
+```
+npm install
+```
+after the installation you can start the server by using the command
+```
+npm run dev
+```
+then you can go to http://localhost:5173/ and explore anime to your fullest content
 
-Use the built-in continuous integration in GitLab.
+# Future feature ideas
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+We plan to introduce a feature that allows users to save their favorite opening (OP) and ending (ED) songs from anime they've watched or added to their watchlist. Users will be able to create and manage custom playlists of these tracks directly within KitsuKeep.
 
-***
+# Challenges faced and solutions
 
-# Editing this README
+Challenge: During development, we encountered multiple merge conflicts when integrating code from different team members.
+Solution: We improved our team communication and version control practices, including regularly pulling from the main branch, clearly assigning tasks, and discussing changes before merging. This significantly reduced conflicts and improved collaboration.
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+Challenge: After creating a new note, it wouldn’t immediately appear on the page, causing confusion in the user experience.
+Solution: We solved this by using prop drilling to pass down and update shared state across components. This ensured that the UI re-renders in real time when notes are added or deleted.
 
-## Suggestions for a good README
+Challenge: Figuring out how to create a carousel that would span the entire width of the home page. Initially the Bootstraps carousel component was used, but it didn't give the flexibility needed for custom animations, an overlay content and data integration.
+Solution: A customer carousel was built using React hooks and CSS animations sourced from a few examples on the web. This allowed full control over the slide transitions, progress indicators and additional buttons.
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+Challenge: After adding an anime to your watchlist, we wanted to make sure that there isn't another duplicate in your watchlist.
+Solution: Utilized useState hook to fetch the getAllWatchlist function so we can use in a different function to find the same anime title. Using a try-catch block to check if it has already been stored in the watchlist or not. We would then create an alert if it's in your watchlist.
 
-## Name
-Choose a self-explaining name for your project.
+# Trello board link
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+https://trello.com/b/oud5DI7s/boolean-brotherhood-capstone-board
