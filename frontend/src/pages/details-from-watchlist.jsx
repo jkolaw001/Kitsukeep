@@ -103,12 +103,18 @@ export default function AnimeDetailFromWatchlist() {
                                         >
                                             <span className="button-icon">▶️</span> {t("detailsfromhome.watchtrailer")}
                                         </button>
-                                        <button
-                                            className="watchlist-button"
-                                            onClick={handleAddToWatchlist}
-                                        >
-                                            <span className="button-icon">➕</span> {t("detailsfromhome.add")}
-                                        </button>
+                                        <div className="note-center-items">
+                                        <section>
+                                        <NoteList id={id} />
+                                         </section>
+                                        <section>
+                                        <Link to="/Watchlist">
+                                        <button onClick={() => {
+                                            deleteAnimeFromWatchlist(id)
+                                            }}>Remove From Watchlist</button>
+                                        </Link>
+                                     </section>
+                                     </div>
                                     </div>
                                 </div>
                             </div>

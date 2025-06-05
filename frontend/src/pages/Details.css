@@ -337,6 +337,10 @@
   }
 }
 
+.note-center-items {
+    display: flex;
+}
+
 /* Optionally, remove the close button styling if you remove the button from JSX */
 .modal-close {
   display: none;
