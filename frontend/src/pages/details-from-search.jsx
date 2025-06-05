@@ -17,25 +17,6 @@ export default function AnimeDetailFromSearch() {
     const [showTrailer, setShowTrailer] = useState(false)
     const { t, i18n } = useTranslation()
 
-    const currentLanguage = i18n.language
-        ? i18n.language.toUpperCase().slice(0, 2)
-        : "EN";
-    const toggleLanguageDropdown = () =>
-        setIsLanguageDropdownOpen((open) => !open);
-
-
-    const handleLanguageChange = (language) => {
-        const languageCode = language.toLowerCase();
-        i18n.changeLanguage(languageCode);
-        setIsLanguageDropdownOpen(false);
-    };
-
-    const languages = [
-        { code: "EN", name: "English" },
-        { code: "ES", name: "Español" },
-        { code: "JA", name: "日本語" },
-        { code: "KO", name: "한국어" },
-    ];
 
     useEffect(() => {
         async function fetchAnime() {
