@@ -11,6 +11,7 @@ import Header from "./pages/Header.jsx";
 import AnimeDetailFromWatchlist from "./pages/details-from-watchlist.jsx";
 import SearchResultsPage from "./pages/SearchResults.jsx";
 import AnimeDetailFromSearch from "./pages/details-from-search.jsx"
+import Footer from "./pages/Footer.jsx";
 
 
 function App() {
@@ -36,6 +37,9 @@ function App() {
           <Route path="/anime/search/:mal_id" element={<AnimeDetailFromSearch />} />
         </Routes>
       </main>
+      <footer>
+        <Footer />
+      </footer>
     </>
   );
 }
