@@ -53,7 +53,7 @@ function WatchlistPage() {
   return (
     <>
       <div className="watchlist-header-section">
-        <h2>{t("watchlist.title")}</h2>
+        <h2 className="watchlist-title">{t("watchlist.title")}</h2>
       </div>
       <div>
         <div className="anime-grid-layout">{animeCards}</div>

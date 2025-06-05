@@ -35,7 +35,7 @@ const resources = {
         search: "Search anime by name"
       },
       watchlist: {
-        title: "My Watchlist"
+        title: "Your Keep"
       },
       detailsfromwatchlist: {
         note: "Add a Note",
@@ -93,7 +93,7 @@ const resources = {
         search: "Buscar anime por nombre"
       },
       watchlist: {
-        title: "Mi Lista de Seguimiento"
+        title: "Tu Torreón"
       },
       detailsfromwatchlist: {
         note: "Agregar una Nota",
@@ -151,7 +151,7 @@ const resources = {
         search: "名前でアニメを検索"
       },
       watchlist: {
-        title: "マイウォッチリスト"
+        title: "あなたのキープ"
       },
       detailsfromwatchlist: {
         note: "メモを追加",
@@ -212,7 +212,7 @@ const resources = {
         search: "이름으로 애니메이션 검색"
       },
       watchlist: {
-        title: "내 시청 목록"
+        title: "당신의 성"
       },
       detailsfromwatchlist: {
         note: "메모 추가",
