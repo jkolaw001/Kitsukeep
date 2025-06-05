@@ -1,8 +1,14 @@
 .note-item {
     align-items: center;
     display: flex;
-
+    justify-content: center;
 }
 .button-delete {
-    background-color: red;
+
+  top: -1rem;
+  right: -1rem;
+  font-size: .5rem;
+  border: none;
+  cursor: pointer;
+
 }

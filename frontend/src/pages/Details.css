@@ -337,6 +337,25 @@
   }
 }
 
+.note-center-items {
+    display: flexbox;
+    text-align: center;
+    gap: 1 rem;
+}
+
+.center-watch-trailer {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.note-list {
+    display:flexbox;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Optionally, remove the close button styling if you remove the button from JSX */
 .modal-close {
   display: none;

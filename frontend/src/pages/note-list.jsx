@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { createNote, getAllAnimeNotes, deleteNote } from "../api"
 import AddNote from "./AddNote"
 import Note from "./note-component"
+import './Details.css'
 
 
 export default function NoteList({id}) {
