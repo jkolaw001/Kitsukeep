@@ -356,7 +356,11 @@
     justify-content: center;
 }
 
-/* Optionally, remove the close button styling if you remove the button from JSX */
 .modal-close {
   display: none;
+}
+
+.notes-container{
+    flex: 1;
+    margin-bottom: 32px;
 }
