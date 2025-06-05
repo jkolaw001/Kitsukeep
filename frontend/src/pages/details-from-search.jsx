@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { getAnime, getAnimeResultsById } from "../api";
+import { getAnimeResultsById } from "../api";
 import { createWatchlist } from "../api";
 import YouTube from "react-youtube";
-import Header from "./Header";
 import './Details.css'
 import './details-from-search.css'
+import { useTranslation } from "react-i18next";
+
 
 export default function AnimeDetailFromSearch() {
 
@@ -13,6 +14,28 @@ export default function AnimeDetailFromSearch() {
     const [error, setError] = useState(null)
     const { mal_id } = useParams()
     const navigate = useNavigate();
+    const [showTrailer, setShowTrailer] = useState(false)
+    const { t, i18n } = useTranslation()
+
+    const currentLanguage = i18n.language
+        ? i18n.language.toUpperCase().slice(0, 2)
+        : "EN";
+    const toggleLanguageDropdown = () =>
+        setIsLanguageDropdownOpen((open) => !open);
+
+
+    const handleLanguageChange = (language) => {
+        const languageCode = language.toLowerCase();
+        i18n.changeLanguage(languageCode);
+        setIsLanguageDropdownOpen(false);
+    };
+
+    const languages = [
+        { code: "EN", name: "English" },
+        { code: "ES", name: "Español" },
+        { code: "JA", name: "日本語" },
+        { code: "KO", name: "한국어" },
+    ];
 
     useEffect(() => {
         async function fetchAnime() {
@@ -73,9 +96,12 @@ export default function AnimeDetailFromSearch() {
                                 </div>
                             </div>
                             <div className="action-buttons">
-                                <a className="play-button" href={anime.trailer} target="_blank" rel="noopener noreferrer">
-                                    <span className="button-icon">▶️</span>  Watch Trailer
-                                </a>
+                                <button
+                                    className="play-button"
+                                    onClick={() => setShowTrailer(true)}
+                                >
+                                    <span className="button-icon">▶️</span> {t("detailsfromhome.watchtrailer")}
+                                </button>
                                 <button
                                     className="watchlist-button"
                                     onClick={async () => {
@@ -83,13 +109,33 @@ export default function AnimeDetailFromSearch() {
                                         navigate("/watchlist");
                                     }}
                                 >
-                                    <span className="button-icon">➕</span> Add To WatchList
+                                    <span className="button-icon">➕</span> {t("detailsfromhome.add")}
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {showTrailer && (
+                <div className="modal-overlay" onClick={() => setShowTrailer(false)}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <button className="modal-close" onClick={() => setShowTrailer(false)}>✖</button>
+                        {anime.trailer ? (
+                            <YouTube
+                                videoId={getYouTubeVideoId(anime.trailer)}
+                                opts={{
+                                    height: "360",
+                                    width: "640",
+                                    playerVars: { autoplay: 1 },
+                                }}
+                            />
+                        ) : (
+                            <h3><b>NO TRAILER AVAILABLE</b></h3>
+                        )}
+                    </div>
+                </div>
+            )}
         </>
     )
 
