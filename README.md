@@ -212,24 +212,5 @@ npm run dev
 ```
 then you can go to http://localhost:5173/ and explore anime to your fullest content
 
-# Future feature ideas
 
-We plan to introduce a feature that allows users to save their favorite opening (OP) and ending (ED) songs from anime they've watched or added to their watchlist. Users will be able to create and manage custom playlists of these tracks directly within KitsuKeep.
 
-# Challenges faced and solutions
-
-Challenge: During development, we encountered multiple merge conflicts when integrating code from different team members.
-Solution: We improved our team communication and version control practices, including regularly pulling from the main branch, clearly assigning tasks, and discussing changes before merging. This significantly reduced conflicts and improved collaboration.
-
-Challenge: After creating a new note, it wouldn’t immediately appear on the page, causing confusion in the user experience.
-Solution: We solved this by using prop drilling to pass down and update shared state across components. This ensured that the UI re-renders in real time when notes are added or deleted.
-
-Challenge: Figuring out how to create a carousel that would span the entire width of the home page. Initially the Bootstraps carousel component was used, but it didn't give the flexibility needed for custom animations, an overlay content and data integration.
-Solution: A customer carousel was built using React hooks and CSS animations sourced from a few examples on the web. This allowed full control over the slide transitions, progress indicators and additional buttons.
-
-Challenge: After adding an anime to your watchlist, we wanted to make sure that there isn't another duplicate in your watchlist.
-Solution: Utilized useState hook to fetch the getAllWatchlist function so we can use in a different function to find the same anime title. Using a try-catch block to check if it has already been stored in the watchlist or not. We would then create an alert if it's in your watchlist.
-
-# Trello board link
-
-https://trello.com/b/oud5DI7s/boolean-brotherhood-capstone-board
