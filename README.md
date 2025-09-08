@@ -1,13 +1,6 @@
 # KitsuKeep
 Welcome to KitsuKeep -- Your Anime. Your Notes. Your World.
 
-# Contributors
-
-Connor Graves - https://gitlab.galvanize.com/connor.graves94
-Jacob Ortiz - https://gitlab.galvanize.com/jortiz35
-Michael Anthony Flores Jr. - https://gitlab.galvanize.com/maf1113
-Joel Kolawole - https://gitlab.galvanize.com/jkolaw00
-
 # Project Description
 
 KitsuKeep – Your Ultimate Anime Companion
