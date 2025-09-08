@@ -1,4 +1,4 @@
-# CapstoneProject
+# KitsuKeep
 Welcome to KitsuKeep -- Your Anime. Your Notes. Your World.
 
 # Contributors
