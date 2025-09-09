@@ -3,6 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from fastapi import HTTPException, Request
 from datetime import datetime, timedelta
 from secrets import token_urlsafe
+from typing import Union
 import bcrypt
 import requests
 
@@ -191,7 +192,7 @@ def create_anime(anime: AnimeCreate) -> AnimeOut:
     return result
 
 
-def get_anime(anime_id: int) -> AnimeOut | None:
+def get_anime(anime_id: int) -> Union[AnimeOut, None]:
     db = sessionLocal()
     anime = db.query(DBAnime).filter(DBAnime.id == anime_id).first()
     if not anime:
@@ -210,28 +211,28 @@ def get_anime(anime_id: int) -> AnimeOut | None:
     return chosen_anime
 
 
-def get_user(user_id: int) -> UserOut | None:
+def get_user(user_id: int) -> Union[UserOut, None]:
     db = sessionLocal()
     user = db.query(DBUser).filter(DBUser.id == user_id).first()
     db.close()
     return user
 
 
-def get_playlist(playlist_id: int) -> PlaylistOut | None:
+def get_playlist(playlist_id: int) -> Union[PlaylistOut, None]:
     db = sessionLocal()
     playlist = db.query(DBPlaylist).filter(DBPlaylist.id == playlist_id).first()
     db.close()
     return playlist
 
 
-def get_watchlist(watchlist_id: int) -> WatchlistOut | None:
+def get_watchlist(watchlist_id: int) -> Union[WatchlistOut, None]:
     db = sessionLocal()
     watchlist = db.query(DBWatchlist).filter(DBWatchlist.id == watchlist_id).first()
     db.close()
     return watchlist
 
 
-def get_note(note_id: int) -> NoteOut | None:
+def get_note(note_id: int) -> Union[NoteOut, None]:
     db = sessionLocal()
     note = db.query(DBNotes).filter(DBNotes.id == note_id).first()
     db.close()
@@ -403,7 +404,7 @@ def update_note(note_id: int, notes: NoteUpdate) -> NoteOut:
     return note_model
 
 
-def validate_username_password(username: str, password: str) -> str | None:
+def validate_username_password(username: str, password: str) -> Union[str, None]:
 
     with sessionLocal() as db:
         account = db.query(DBUser).filter(DBUser.username == username).first()
