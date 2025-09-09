@@ -6,7 +6,6 @@ from secrets import token_urlsafe
 import bcrypt
 import requests
 
-# from authenticate import get_auth_user
 from schemas import (
     WatchlistOut,
     NoteCreate,
@@ -25,7 +24,7 @@ from schemas import (
 from db_models import DBNotes, DBPlaylist, DBUser, DBWatchlist, DBAnime
 
 
-DATABASE_URL = "postgresql+psycopg://postgres:postgres@localhost:5432/anime"
+DATABASE_URL = "postgresql+psycopg://postgres:Lu296176@anime.cluster-cglem2qoq2lm.us-east-1.rds.amazonaws.com:5432/anime"
 SESSION_LIFE_MINUTES = 60 * 60 * 2
 
 engine = create_engine(DATABASE_URL)
@@ -90,7 +89,6 @@ def create_watchlist_entry(anime: AnimeCreate, request: Request) -> WatchlistOut
         db.close()
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Check if anime already exists in DBAnime table
     anime_entry = db.query(DBAnime).filter(DBAnime.mal_id == anime.mal_id).first()
 
     if anime_entry is None:
@@ -107,11 +105,11 @@ def create_watchlist_entry(anime: AnimeCreate, request: Request) -> WatchlistOut
         db.commit()
         db.refresh(anime_entry)
 
-    # Check if the anime is already in the user's watchlist
-    duplicate_check = db.query(DBWatchlist).filter(
-        DBWatchlist.anime_id == anime_entry.id,
-        DBWatchlist.user_id == user_id
-    ).first()
+    duplicate_check = (
+        db.query(DBWatchlist)
+        .filter(DBWatchlist.anime_id == anime_entry.id, DBWatchlist.user_id == user_id)
+        .first()
+    )
 
     if duplicate_check:
         db.close()
@@ -366,7 +364,9 @@ def delete_note(anime_id: int, note_id: int, request: Request):
         raise HTTPException(status_code=404, detail="Note Not Found")
     if note_model.user_id != user_id:
         db.close()
-        raise HTTPException(status_code=403, detail="Not authorized to delete notes that are not yours")
+        raise HTTPException(
+            status_code=403, detail="Not authorized to delete notes that are not yours"
+        )
     db.delete(note_model)
     db.commit()
     db.close()
@@ -404,23 +404,16 @@ def update_note(note_id: int, notes: NoteUpdate) -> NoteOut:
 
 
 def validate_username_password(username: str, password: str) -> str | None:
-    """
-    Validate a username and password against the database. If valid,
-    generates a new session token, updates the session expiration, and
-    returns the session token. Returns None if credentials are invalid.
-    """
-    # retrieve the user account from the database
+
     with sessionLocal() as db:
         account = db.query(DBUser).filter(DBUser.username == username).first()
         if not account:
             return None
 
-        # validate the provided credentials (username & password)
         valid_credentials = bcrypt.checkpw(password.encode(), account.password.encode())
         if not valid_credentials:
             return None
 
-        # create a new session token and set the expiration date
         session_token = token_urlsafe()
         account.session_token = session_token
         expires = datetime.now() + timedelta(minutes=SESSION_LIFE_MINUTES)

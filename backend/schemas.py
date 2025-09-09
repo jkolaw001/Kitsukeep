@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 
 class UserBase(BaseModel):
@@ -11,7 +12,7 @@ class UserBase(BaseModel):
 
 class AnimeSearchResult(BaseModel):
     mal_id: int
-    img_url: str | None
+    img_url: Optional[str]
     title: str
     description: str | None
     genre: str | None
