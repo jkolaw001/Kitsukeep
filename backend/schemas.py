@@ -14,19 +14,19 @@ class AnimeSearchResult(BaseModel):
     mal_id: int
     img_url: Optional[str]
     title: str
-    description: str | None
-    genre: str | None
-    rating: str | None
-    trailer: str | None
+    description: Optional[str]
+    genre: Optional[str]
+    rating: Optional[str]
+    trailer: Optional[str]
 
 
 class AnimeBase(BaseModel):
     title: str
-    description: str | None
-    genre: str | None
-    rating: str | None
-    img_url: str | None
-    trailer: str | None
+    description: Optional[str]
+    genre: Optional[str]
+    rating: Optional[str]
+    img_url: Optional[str]
+    trailer: Optional[str]
     mal_id: int
 
 
@@ -94,7 +94,7 @@ class AnimeOut(AnimeBase):
 
 
 class NoteUpdate(BaseModel):
-    note: str | None = None
+    note: Optional[str] = None
 
 
 class WatchlistWithAnimeOut(BaseModel):
