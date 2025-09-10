@@ -1,7 +1,12 @@
 from schemas import AnimeOut, AnimeCreate
 from db_models import DBAnime
 import requests
-from db import sessionLocal
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+DATABASE_URL = "postgresql+psycopg://postgres:Lu296176@anime.cluster-cglem2qoq2lm.us-east-1.rds.amazonaws.com:5432/anime"
+engine = create_engine(DATABASE_URL)
+sessionLocal = sessionmaker(bind=engine)
 
 
 def fetch_top_anime() -> list[AnimeOut]:
